@@ -1,0 +1,481 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "version": "0.0.1",
+    "title": "Quiz API",
+    "description": "Manage Quizzes"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:4022/"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Quiz",
+      "description": "Handle quizzes"
+    }
+  ],
+  "securityDefinitions": {},
+  "paths": {
+    "/statuses/": {
+      "get": {
+        "tags": [
+          "Quiz"
+        ],
+        "description": "Get all valid statuses that can be used for quizzes",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Statuses fetched successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Status"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/Status"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/pending": {
+      "get": {
+        "tags": [
+          "Quiz"
+        ],
+        "description": "Get all pending quizzes",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "skip",
+            "in": "query",
+            "description": "How many elements to skip. Used for paging.",
+            "required": false,
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "take",
+            "in": "query",
+            "description": "How many elements to take. Used for paging.",
+            "required": false,
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Quizzes fetched successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Quiz"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/Quiz"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/approved": {
+      "get": {
+        "tags": [
+          "Quiz"
+        ],
+        "description": "Get all approved quizzes",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "skip",
+            "in": "query",
+            "description": "How many elements to skip. Used for paging.",
+            "required": false,
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "take",
+            "in": "query",
+            "description": "How many elements to take. Used for paging.",
+            "required": false,
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Quizzes fetched successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Quiz"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/Quiz"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/{quizId}": {
+      "get": {
+        "tags": [
+          "Quiz"
+        ],
+        "description": "Get one quiz including questions",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "quizId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Quiz fetched successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/QuizExtended"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/QuizExtended"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Quiz not found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/": {
+      "post": {
+        "tags": [
+          "Quiz"
+        ],
+        "description": "Get one quiz including questions",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Quiz created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/QuizExtended"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/QuizExtended"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddQuiz"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/{quizId}/status": {
+      "put": {
+        "tags": [
+          "Quiz"
+        ],
+        "description": "Update status of a quiz",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "quizId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "number"
+            },
+            "description": "Quiz Id."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Quiz status updated successfully"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateQuizStatus"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    },
+    "schemas": {
+      "Status": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number",
+            "example": 1
+          },
+          "name": {
+            "type": "string",
+            "example": "Status"
+          }
+        },
+        "xml": {
+          "name": "Status"
+        }
+      },
+      "Quiz": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number",
+            "example": 1
+          },
+          "name": {
+            "type": "string",
+            "example": "Quiz"
+          },
+          "topicId": {
+            "type": "number",
+            "example": 1
+          },
+          "statusId": {
+            "type": "number",
+            "example": 1
+          },
+          "createdById": {
+            "type": "number",
+            "example": 1
+          },
+          "createdAt": {
+            "type": "string",
+            "example": "2020-03-31T00:00:00.000Z"
+          }
+        },
+        "xml": {
+          "name": "Quiz"
+        }
+      },
+      "Question": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number",
+            "example": 1
+          },
+          "text": {
+            "type": "string",
+            "example": "what?"
+          },
+          "choice0": {
+            "type": "string",
+            "example": "one"
+          },
+          "choice1": {
+            "type": "string",
+            "example": "two"
+          },
+          "choice2": {
+            "type": "string",
+            "example": "three"
+          },
+          "choice3": {
+            "type": "string",
+            "example": "four"
+          },
+          "correct0": {
+            "type": "number",
+            "example": 1
+          },
+          "correct1": {
+            "type": "number",
+            "example": 0
+          },
+          "correct2": {
+            "type": "number",
+            "example": 0
+          },
+          "correct3": {
+            "type": "number",
+            "example": 0
+          },
+          "createdBy": {
+            "type": "number",
+            "example": 1
+          },
+          "createdAt": {
+            "type": "string",
+            "example": "2020-03-31T00:00:00.000Z"
+          }
+        },
+        "xml": {
+          "name": "Question"
+        }
+      },
+      "QuizExtended": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number",
+            "example": 1
+          },
+          "name": {
+            "type": "string",
+            "example": "Quiz"
+          },
+          "topicId": {
+            "type": "number",
+            "example": 1
+          },
+          "statusId": {
+            "type": "number",
+            "example": 1
+          },
+          "createdById": {
+            "type": "number",
+            "example": 1
+          },
+          "createdAt": {
+            "type": "string",
+            "example": "2020-03-31T00:00:00.000Z"
+          },
+          "questions": {
+            "type": "array",
+            "items": {
+              "xml": {
+                "name": "question"
+              },
+              "$ref": "#/components/schemas/Question"
+            }
+          }
+        },
+        "xml": {
+          "name": "QuizExtended"
+        }
+      },
+      "AddQuiz": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Quiz"
+          },
+          "topicId": {
+            "type": "number",
+            "example": 1
+          },
+          "questions": {
+            "type": "array",
+            "items": {
+              "xml": {
+                "name": "question"
+              },
+              "$ref": "#/components/schemas/Question"
+            }
+          }
+        },
+        "xml": {
+          "name": "AddQuiz"
+        }
+      },
+      "UpdateQuizStatus": {
+        "type": "object",
+        "properties": {
+          "statusId": {
+            "type": "number",
+            "example": 1
+          }
+        },
+        "xml": {
+          "name": "UpdateQuizStatus"
+        }
+      }
+    }
+  },
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ]
+}

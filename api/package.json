@@ -6,6 +6,7 @@
   "scripts": {
     "start": "nodemon src",
     "migrate": "node-pg-migrate",
+    "swagger-autogen": "node ./swagger.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -21,7 +22,9 @@
     "jwks-rsa": "^2.0.5",
     "morgan": "^1.10.0",
     "node-pg-migrate": "^6.2.0",
-    "pg-promise": "^10.11.1"
+    "pg-promise": "^10.11.1",
+    "swagger-autogen": "^2.18.4",
+    "swagger-ui-express": "^4.3.0"
   },
   "devDependencies": {
     "nodemon": "^2.0.15"

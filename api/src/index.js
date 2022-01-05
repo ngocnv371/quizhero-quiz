@@ -8,6 +8,8 @@ var jwt = require("express-jwt");
 var jwks = require("jwks-rsa");
 require("dotenv").config();
 const mountRoutes = require("./routes");
+const swaggerUi = require("swagger-ui-express");
+const swaggerFile = require("../swagger-output.json");
 
 // defining the Express app
 const app = express();
@@ -35,6 +37,8 @@ var jwtCheck = jwt({
   issuer: process.env.JWT_ISSUER,
   algorithms: ["RS256"],
 });
+
+app.use("/swagger", swaggerUi.serve, swaggerUi.setup(swaggerFile));
 
 app.use(jwtCheck);
 
