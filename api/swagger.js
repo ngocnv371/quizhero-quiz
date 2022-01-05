@@ -63,6 +63,7 @@ const doc = {
     UpdateQuizStatus: {
       statusId: 1,
     },
+    QuizArray: [{ $ref: "#/definitions/Quiz" }],
   },
   components: {
     securitySchemes: {

@@ -1,4 +1,5 @@
 var express = require("express");
+const { VALID_STATUSES } = require("../config");
 var router = express.Router();
 
 const db = require("../db");
@@ -32,7 +33,7 @@ router.get("/pending", async (req, res) => {
     /*
       #swagger.responses[200] = {
         description: "Quizzes fetched successfully",
-        schema: { $ref: "#/definitions/Quiz" }
+        schema: { $ref: "#/definitions/QuizArray" }
       } 
     */
     res.send(data.rows);
@@ -70,7 +71,7 @@ router.get("/approved", async (req, res) => {
     /*
       #swagger.responses[200] = {
         description: "Quizzes fetched successfully",
-        schema: { $ref: "#/definitions/Quiz" }
+        schema: { $ref: "#/definitions/QuizArray" }
       } 
     */
     res.send(data.rows);
@@ -197,9 +198,42 @@ router.post("/", async (req, res) => {
   }
 });
 
+function deleteQuiz(quizId) {
+  return db.query('UPDATE quizzes SET "statusId" = $1 WHERE "id" = $2', [VALID_STATUSES.Deleted, quizId]);
+}
+
+router.delete("/:quizId", async (req, res) => {
+  /*
+    #swagger.tags = ["Quiz", "Status"]
+    #swagger.description = 'Delete a quiz'
+  */
+  res.setHeader("Content-Type", "application/json");
+  const { quizId } = req.params;
+  /*
+    #swagger.parameters['quizId'] = {
+      in: 'path',
+      description: 'Quiz Id.',
+      required: true,
+      schema: 'number'
+    }  
+  */
+  try {
+    await deleteQuiz(quizId);
+    /*
+        #swagger.responses[200] = {
+          description: "Quiz deleted successfully",
+        } 
+      */
+    res.status(200).send({});
+  } catch (error) {
+    console.error(error);
+    res.status(500).send();
+  }
+});
+
 router.put("/:quizId/status", async (req, res) => {
   /*
-    #swagger.tags = ["Quiz"]
+    #swagger.tags = ["Quiz", "Status"]
     #swagger.description = 'Update status of a quiz'
   */
   res.setHeader("Content-Type", "application/json");

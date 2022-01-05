@@ -5,7 +5,7 @@ const db = require("../db");
 
 router.get("/", async (req, res) => {
   /*
-    #swagger.tags = ["Quiz"]
+    #swagger.tags = ["Status"]
     #swagger.description = 'Get all valid statuses that can be used for quizzes'
   */
   /*

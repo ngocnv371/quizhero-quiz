@@ -21,7 +21,7 @@
     "/statuses/": {
       "get": {
         "tags": [
-          "Quiz"
+          "Status"
         ],
         "description": "Get all valid statuses that can be used for quizzes",
         "produces": [
@@ -85,12 +85,12 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Quiz"
+                  "$ref": "#/components/schemas/QuizArray"
                 }
               },
               "application/xml": {
                 "schema": {
-                  "$ref": "#/components/schemas/Quiz"
+                  "$ref": "#/components/schemas/QuizArray"
                 }
               }
             }
@@ -136,12 +136,12 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Quiz"
+                  "$ref": "#/components/schemas/QuizArray"
                 }
               },
               "application/xml": {
                 "schema": {
-                  "$ref": "#/components/schemas/Quiz"
+                  "$ref": "#/components/schemas/QuizArray"
                 }
               }
             }
@@ -194,6 +194,36 @@
             "description": "Internal Server Error"
           }
         }
+      },
+      "delete": {
+        "tags": [
+          "Quiz",
+          "Status"
+        ],
+        "description": "Delete a quiz",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "quizId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "number"
+            },
+            "description": "Quiz Id."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Quiz deleted successfully"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
       }
     },
     "/": {
@@ -241,7 +271,8 @@
     "/{quizId}/status": {
       "put": {
         "tags": [
-          "Quiz"
+          "Quiz",
+          "Status"
         ],
         "description": "Update status of a quiz",
         "produces": [
@@ -469,6 +500,18 @@
         },
         "xml": {
           "name": "UpdateQuizStatus"
+        }
+      },
+      "QuizArray": {
+        "type": "array",
+        "items": {
+          "xml": {
+            "name": "quiz"
+          },
+          "$ref": "#/components/schemas/Quiz"
+        },
+        "xml": {
+          "name": "QuizArray"
         }
       }
     }
