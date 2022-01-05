@@ -83,7 +83,6 @@ async function getQuizById(quizId) {
   const quizQuery = 'SELECT * FROM quizzes WHERE "id" = $1';
   const quizResult = await db.query(quizQuery, [quizId]);
   if (!quizResult.rowCount) {
-    console.log(quizResult);
     return null;
   }
   const questionsQuery = 'SELECT * FROM questions WHERE "quizId" = $1';
@@ -121,7 +120,7 @@ router.get("/:quizId", async (req, res) => {
     */
     res.send(quiz);
   } catch (error) {
-    console.log(error);
+    console.error(error);
     res.status(500).send({});
   }
 });
@@ -166,7 +165,6 @@ router.post("/", async (req, res) => {
   */
   res.setHeader("Content-Type", "application/json");
   const { name, topicId, questions } = req.body;
-  console.log(req.body);
   /*
     #swagger.requestBody = {
       required: true,
@@ -194,7 +192,7 @@ router.post("/", async (req, res) => {
     */
     res.send(await getQuizById(quiz.id));
   } catch (error) {
-    console.log(error);
+    console.error(error);
     res.status(500).send({});
   }
 });
@@ -237,7 +235,7 @@ router.put("/:quizId/status", async (req, res) => {
     */
     res.status(200).send({});
   } catch (error) {
-    console.log(error);
+    console.error(error);
     res.status(500).send();
   }
 });

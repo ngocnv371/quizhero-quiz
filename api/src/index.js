@@ -42,6 +42,15 @@ app.use("/swagger", swaggerUi.serve, swaggerUi.setup(swaggerFile));
 
 app.use(jwtCheck);
 
+app.use(function(err, req, res, next) {
+  if(err.name === 'UnauthorizedError') {
+    res.status(err.status).send({message:err.message});
+    console.error(err);
+    return;
+  }
+next();
+});
+
 mountRoutes(app);
 
 // starting the server
