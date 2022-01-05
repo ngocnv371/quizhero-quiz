@@ -30,9 +30,10 @@ router.get("/approved", async (req, res) => {
 });
 
 async function getQuizById(quizId) {
-  const quizQuery = 'SELECT * FROM approved_quizzes WHERE "id" = $1';
+  const quizQuery = 'SELECT * FROM quizzes WHERE "id" = $1';
   const quizResult = await db.query(quizQuery, [quizId]);
   if (!quizResult.rowCount) {
+    console.log(quizResult)
     return null;
   }
   const questionsQuery = 'SELECT * FROM questions WHERE "quizId" = $1';
@@ -101,6 +102,19 @@ router.post("/", async (req, res) => {
       )
     );
     res.send(getQuizById(quiz.id));
+  } catch (error) {
+    console.log(error);
+    res.status(500).send();
+  }
+});
+
+router.put("/:quizId/status", async (req, res) => {
+  const { quizId } = req.params;
+  const { statusId } = req.body;
+  const query = 'UPDATE quizzes SET "statusId" = $1 WHERE "id" = $2';
+  try {
+    await db.query(query, [statusId, quizId]);
+    res.send(200);
   } catch (error) {
     console.log(error);
     res.status(500).send();
