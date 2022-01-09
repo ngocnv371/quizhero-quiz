@@ -32,6 +32,17 @@ const doc = {
       createdById: 1,
       createdAt: "2020-03-31T00:00:00.000Z",
     },
+    AddQuestion: {
+      text: "what?",
+      choice0: "one",
+      choice1: "two",
+      choice2: "three",
+      choice3: "four",
+      correct0: 1,
+      correct1: 0,
+      correct2: 0,
+      correct3: 0,
+    },
     Question: {
       id: 1,
       text: "what?",
@@ -46,6 +57,17 @@ const doc = {
       createdBy: 1,
       createdAt: "2020-03-31T00:00:00.000Z",
     },
+    UpdateQuestion: {
+      text: "what?",
+      choice0: "one",
+      choice1: "two",
+      choice2: "three",
+      choice3: "four",
+      correct0: 1,
+      correct1: 0,
+      correct2: 0,
+      correct3: 0,
+    },
     QuizExtended: {
       id: 1,
       name: "Quiz",
@@ -58,7 +80,10 @@ const doc = {
     AddQuiz: {
       name: "Quiz",
       topicId: 1,
-      questions: [{ $ref: "#/definitions/Question" }],
+    },
+    UpdateQuiz: {
+      name: "Quiz",
+      topicId: 1,
     },
     UpdateQuizStatus: {
       statusId: 1,

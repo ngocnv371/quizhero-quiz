@@ -26,29 +26,30 @@ app.use(cors());
 // adding morgan to log HTTP requests
 app.use(morgan("combined"));
 
-var jwtCheck = jwt({
-  secret: jwks.expressJwtSecret({
-    cache: true,
-    rateLimit: true,
-    jwksRequestsPerMinute: 5,
-    jwksUri: process.env.JWT_URI,
-  }),
-  audience: process.env.JWT_AUDIENCE,
-  issuer: process.env.JWT_ISSUER,
-  algorithms: ["RS256"],
-});
-
 app.use("/swagger", swaggerUi.serve, swaggerUi.setup(swaggerFile));
 
-app.use(jwtCheck);
+if (process.env.NODE_ENV !== "test") {
+  var jwtCheck = jwt({
+    secret: jwks.expressJwtSecret({
+      cache: true,
+      rateLimit: true,
+      jwksRequestsPerMinute: 5,
+      jwksUri: process.env.JWT_URI,
+    }),
+    audience: process.env.JWT_AUDIENCE,
+    issuer: process.env.JWT_ISSUER,
+    algorithms: ["RS256"],
+  });
 
-app.use(function(err, req, res, next) {
-  if(err.name === 'UnauthorizedError') {
-    res.status(err.status).send({message:err.message});
+  app.use(jwtCheck);
+}
+app.use(function (err, req, res, next) {
+  if (err.name === "UnauthorizedError") {
+    res.status(err.status).send({ message: err.message });
     console.error(err);
     return;
   }
-next();
+  next();
 });
 
 mountRoutes(app);

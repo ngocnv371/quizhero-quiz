@@ -1,56 +1,23 @@
-var express = require("express");
-const { VALID_STATUSES } = require("../config");
-var router = express.Router();
+const {
+  createQuiz,
+  deleteQuiz,
+  getQuizById,
+  updateQuiz,
+  updateQuizStatus,
+  getApprovedQuizzes,
+  getPendingQuizzes,
+} = require("../core/quiz");
 
-const db = require("../db");
-
-router.get("/pending", async (req, res) => {
-  /*
-    #swagger.tags = ["Quiz"]
-    #swagger.description = 'Get all pending quizzes'
-  */
-  res.setHeader("Content-Type", "application/json");
-  const skip = Number(req.params.skip) || 0;
-  const take = Number(req.params.take) || 20;
-  /*
-    #swagger.parameters['skip'] = {
-      in: 'query',
-      description: 'How many elements to skip. Used for paging.',
-      required: false,
-      type: 'number'
-    } 
-    #swagger.parameters['take'] = {
-      in: 'query',
-      description: 'How many elements to take. Used for paging.',
-      required: false,
-      type: 'number'
-    } 
-  */
-  const query =
-    'SELECT * FROM pending_quizzes ORDER BY "id" LIMIT $1 OFFSET $2';
-  try {
-    const data = await db.query(query, [take, skip]);
+module.exports = (router) => {
+  router.get("/quizzes/pending", async (req, res) => {
     /*
-      #swagger.responses[200] = {
-        description: "Quizzes fetched successfully",
-        schema: { $ref: "#/definitions/QuizArray" }
-      } 
+      #swagger.tags = ["Quiz"]
+      #swagger.description = 'Get all pending quizzes'
     */
-    res.send(data.rows);
-  } catch (error) {
-    res.status(500).send(error);
-  }
-});
-
-router.get("/approved", async (req, res) => {
-  /*
-    #swagger.tags = ["Quiz"]
-    #swagger.description = 'Get all approved quizzes'
-  */
-  res.setHeader("Content-Type", "application/json");
-  const skip = Number(req.params.skip) || 0;
-  const take = Number(req.params.take) || 20;
-  /*
+    res.setHeader("Content-Type", "application/json");
+    const skip = Number(req.params.skip) || 0;
+    const take = Number(req.params.take) || 20;
+    /*
       #swagger.parameters['skip'] = {
         in: 'query',
         description: 'How many elements to skip. Used for paging.',
@@ -64,214 +31,209 @@ router.get("/approved", async (req, res) => {
         type: 'number'
       } 
     */
-  const query =
-    'SELECT * FROM approved_quizzes ORDER BY "id" LIMIT $1 OFFSET $2';
-  try {
-    const data = await db.query(query, [take, skip]);
-    /*
-      #swagger.responses[200] = {
-        description: "Quizzes fetched successfully",
-        schema: { $ref: "#/definitions/QuizArray" }
-      } 
-    */
-    res.send(data.rows);
-  } catch (error) {
-    res.status(500).send(error);
-  }
-});
-
-async function getQuizById(quizId) {
-  const quizQuery = 'SELECT * FROM quizzes WHERE "id" = $1';
-  const quizResult = await db.query(quizQuery, [quizId]);
-  if (!quizResult.rowCount) {
-    return null;
-  }
-  const questionsQuery = 'SELECT * FROM questions WHERE "quizId" = $1';
-  const questionsResult = await db.query(questionsQuery, [quizId]);
-  return {
-    ...quizResult.rows[0],
-    questions: questionsResult.rows,
-  };
-}
-
-router.get("/:quizId", async (req, res) => {
-  /*
-    #swagger.tags = ["Quiz"]
-    #swagger.description = 'Get one quiz including questions'
-  */
-  res.setHeader("Content-Type", "application/json");
-  const { quizId } = req.params;
-
-  try {
-    const quiz = await getQuizById(quizId);
-    if (!quiz) {
+    try {
+      const data = await getPendingQuizzes(skip, take);
       /*
-        #swagger.responses[404] = {
-          description: "Quiz not found",
+        #swagger.responses[200] = {
+          description: "Quizzes fetched successfully",
+          schema: { $ref: "#/definitions/QuizArray" }
         } 
       */
-      res.status(404).send({});
-      return;
+      res.send(data.rows);
+    } catch (error) {
+      res.status(500).send(error);
     }
+  });
+
+  router.get("/quizzes/approved", async (req, res) => {
     /*
-      #swagger.responses[200] = {
-        description: "Quiz fetched successfully",
-        schema: { $ref: "#/definitions/QuizExtended" }
+      #swagger.tags = ["Quiz"]
+      #swagger.description = 'Get all approved quizzes'
+    */
+    res.setHeader("Content-Type", "application/json");
+    const skip = Number(req.params.skip) || 0;
+    const take = Number(req.params.take) || 20;
+    /*
+      #swagger.parameters['skip'] = {
+        in: 'query',
+        description: 'How many elements to skip. Used for paging.',
+        required: false,
+        type: 'number'
+      } 
+      #swagger.parameters['take'] = {
+        in: 'query',
+        description: 'How many elements to take. Used for paging.',
+        required: false,
+        type: 'number'
       } 
     */
-    res.send(quiz);
-  } catch (error) {
-    console.error(error);
-    res.status(500).send({});
-  }
-});
+    try {
+      const data = await getApprovedQuizzes(skip, take);
+      /*
+        #swagger.responses[200] = {
+          description: "Quizzes fetched successfully",
+          schema: { $ref: "#/definitions/QuizArray" }
+        } 
+      */
+      res.send(data.rows);
+    } catch (error) {
+      res.status(500).send(error);
+    }
+  });
 
-async function createQuiz(q) {
-  const query =
-    'INSERT INTO quizzes("name", "topicId", "statusId", "createdById") VALUES ($1, $2, 1, $3) RETURNING *';
-  const result = await db.query(query, [q.name, q.topicId, q.createdById]);
-  return result.rows[0];
-}
+  router.get("/quizzes/:quizId", async (req, res) => {
+    /*
+      #swagger.tags = ["Quiz"]
+      #swagger.description = 'Get one quiz including questions'
+    */
+    res.setHeader("Content-Type", "application/json");
+    const { quizId } = req.params;
 
-function createQuestion(q) {
-  const query = `INSERT INTO questions(
-    "text", "quizId", 
-    "choice0", "choice1", "choice2", "choice3", 
-    "correct0", "correct1", "correct2", "correct3", 
-    "createdById"
-    ) VALUES (
-      $1, $2, 
-      $3, $4, $5, $6, 
-      $7, $8, $9, $10,
-      $11)`;
-  return db.query(query, [
-    q.text,
-    q.quizId,
-    q.choice0,
-    q.choice1,
-    q.choice2,
-    q.choice3,
-    q.correct0,
-    q.correct1,
-    q.correct2,
-    q.correct3,
-    q.createdById,
-  ]);
-}
+    try {
+      const quiz = await getQuizById(quizId);
+      if (!quiz) {
+        /*
+          #swagger.responses[404] = {
+            description: "Quiz not found",
+          } 
+        */
+        res.status(404).send({});
+        return;
+      }
+      /*
+        #swagger.responses[200] = {
+          description: "Quiz fetched successfully",
+          schema: { $ref: "#/definitions/QuizExtended" }
+        } 
+      */
+      res.send(quiz);
+    } catch (error) {
+      console.error(error);
+      res.status(500).send({});
+    }
+  });
 
-router.post("/", async (req, res) => {
-  /*
-    #swagger.tags = ["Quiz"]
-    #swagger.description = 'Get one quiz including questions'
-  */
-  res.setHeader("Content-Type", "application/json");
-  const { name, topicId, questions } = req.body;
-  /*
-    #swagger.requestBody = {
-      required: true,
-      content: {
-        'application/json': {
-          schema: {
-            $ref: '#/definitions/AddQuiz'
+  router.post("/quizzes", async (req, res) => {
+    /*
+      #swagger.tags = ["Quiz"]
+      #swagger.description = 'create a quiz with questions'
+    */
+    res.setHeader("Content-Type", "application/json");
+    const { name, topicId } = req.body;
+    /*
+      #swagger.requestBody = {
+        required: true,
+        content: {
+          'application/json': {
+            schema: {
+              $ref: '#/definitions/AddQuiz'
+            }
           }
         }
       }
-    }
-  */
-  try {
-    const quiz = await createQuiz({ name, topicId, createdById: 1 });
-    await Promise.all(
-      questions.map((q) =>
-        createQuestion({ ...q, createdById: 1, quizId: quiz.id })
-      )
-    );
-    /*
-      #swagger.responses[200] = {
-        description: "Quiz created successfully",
-        schema: { $ref: "#/definitions/QuizExtended" }
-      } 
     */
-    res.send(await getQuizById(quiz.id));
-  } catch (error) {
-    console.error(error);
-    res.status(500).send({});
-  }
-});
+    try {
+      const quiz = await createQuiz({ name, topicId, createdById: 1 });
+      /*
+        #swagger.responses[200] = {
+          description: "Quiz created successfully",
+          schema: { $ref: "#/definitions/Quiz" }
+        } 
+      */
+      res.send(quiz);
+    } catch (error) {
+      console.error(error);
+      res.status(500).send({});
+    }
+  });
 
-function deleteQuiz(quizId) {
-  return db.query('UPDATE quizzes SET "statusId" = $1 WHERE "id" = $2', [VALID_STATUSES.Deleted, quizId]);
-}
-
-router.delete("/:quizId", async (req, res) => {
-  /*
-    #swagger.tags = ["Quiz", "Status"]
-    #swagger.description = 'Delete a quiz'
-  */
-  res.setHeader("Content-Type", "application/json");
-  const { quizId } = req.params;
-  /*
-    #swagger.parameters['quizId'] = {
-      in: 'path',
-      description: 'Quiz Id.',
-      required: true,
-      schema: 'number'
-    }  
-  */
-  try {
-    await deleteQuiz(quizId);
+  router.delete("/quizzes/:quizId", async (req, res) => {
     /*
+      #swagger.tags = ["Quiz", "Status"]
+      #swagger.description = 'Delete a quiz'
+    */
+    res.setHeader("Content-Type", "application/json");
+    const { quizId } = req.params;
+    try {
+      await deleteQuiz(quizId);
+      /*
         #swagger.responses[200] = {
           description: "Quiz deleted successfully",
         } 
       */
-    res.status(200).send({});
-  } catch (error) {
-    console.error(error);
-    res.status(500).send();
-  }
-});
+      res.status(200).send({});
+    } catch (error) {
+      console.error(error);
+      res.status(500).send();
+    }
+  });
 
-router.put("/:quizId/status", async (req, res) => {
-  /*
-    #swagger.tags = ["Quiz", "Status"]
-    #swagger.description = 'Update status of a quiz'
-  */
-  res.setHeader("Content-Type", "application/json");
-  const { quizId } = req.params;
-  /*
-    #swagger.parameters['quizId'] = {
-      in: 'path',
-      description: 'Quiz Id.',
-      required: true,
-      schema: 'number'
-    }  
-  */
-  const { statusId } = req.body;
-  /*
-    #swagger.requestBody = {
-      required: true,
-      content: {
-        'application/json': {
-          schema: {
-            $ref: '#/definitions/UpdateQuizStatus'
+  router.put("/quizzes/:quizId", async (req, res) => {
+    /*
+      #swagger.tags = ["Quiz"]
+      #swagger.description = 'Update a quiz'
+    */
+    res.setHeader("Content-Type", "application/json");
+    const { quizId } = req.params;
+    /*
+      #swagger.requestBody = {
+        required: true,
+        content: {
+          'application/json': {
+            schema: {
+              $ref: '#/definitions/UpdateQuiz'
+            }
           }
         }
       }
-    }
-  */
-  const query = 'UPDATE quizzes SET "statusId" = $1 WHERE "id" = $2';
-  try {
-    await db.query(query, [statusId, quizId]);
-    /*
-      #swagger.responses[200] = {
-        description: "Quiz status updated successfully",
-      } 
     */
-    res.status(200).send({});
-  } catch (error) {
-    console.error(error);
-    res.status(500).send();
-  }
-});
+    try {
+      const updated = await updateQuiz(quizId, req.body);
 
-module.exports = router;
+      /*
+        #swagger.responses[200] = {
+          description: "Quiz status updated successfully",
+        } 
+      */
+      res.status(200).send(updated);
+    } catch (error) {
+      console.error(error);
+      res.status(500).send();
+    }
+  });
+
+  router.put("/quizzes/:quizId/status", async (req, res) => {
+    /*
+      #swagger.tags = ["Quiz", "Status"]
+      #swagger.description = 'Update status of a quiz'
+    */
+    res.setHeader("Content-Type", "application/json");
+    const { quizId } = req.params;
+    const { statusId } = req.body;
+    /*
+      #swagger.requestBody = {
+        required: true,
+        content: {
+          'application/json': {
+            schema: {
+              $ref: '#/definitions/UpdateQuizStatus'
+            }
+          }
+        }
+      }
+    */
+    try {
+      const updated = await updateQuizStatus(quizId, statusId);
+      /*
+        #swagger.responses[200] = {
+          description: "Quiz status updated successfully",
+          schema: { $ref: "#/definitions/Quiz" }
+        } 
+      */
+      res.status(200).send(updated);
+    } catch (error) {
+      console.error(error);
+      res.status(500).send();
+    }
+  });
+};

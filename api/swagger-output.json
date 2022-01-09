@@ -18,39 +18,7 @@
   ],
   "securityDefinitions": {},
   "paths": {
-    "/statuses/": {
-      "get": {
-        "tags": [
-          "Status"
-        ],
-        "description": "Get all valid statuses that can be used for quizzes",
-        "produces": [
-          "application/json"
-        ],
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "Statuses fetched successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Status"
-                }
-              },
-              "application/xml": {
-                "schema": {
-                  "$ref": "#/components/schemas/Status"
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
-        }
-      }
-    },
-    "/pending": {
+    "/quizzes/pending": {
       "get": {
         "tags": [
           "Quiz"
@@ -101,7 +69,7 @@
         }
       }
     },
-    "/approved": {
+    "/quizzes/approved": {
       "get": {
         "tags": [
           "Quiz"
@@ -152,7 +120,7 @@
         }
       }
     },
-    "/{quizId}": {
+    "/quizzes/{quizId}": {
       "get": {
         "tags": [
           "Quiz"
@@ -210,10 +178,8 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "string",
-              "example": "number"
-            },
-            "description": "Quiz Id."
+              "type": "string"
+            }
           }
         ],
         "responses": {
@@ -224,14 +190,51 @@
             "description": "Internal Server Error"
           }
         }
+      },
+      "put": {
+        "tags": [
+          "Quiz"
+        ],
+        "description": "Update a quiz",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "quizId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Quiz status updated successfully"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateQuiz"
+              }
+            }
+          }
+        }
       }
     },
-    "/": {
+    "/quizzes": {
       "post": {
         "tags": [
           "Quiz"
         ],
-        "description": "Get one quiz including questions",
+        "description": "create a quiz with questions",
         "produces": [
           "application/json"
         ],
@@ -242,12 +245,12 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/QuizExtended"
+                  "$ref": "#/components/schemas/Quiz"
                 }
               },
               "application/xml": {
                 "schema": {
-                  "$ref": "#/components/schemas/QuizExtended"
+                  "$ref": "#/components/schemas/Quiz"
                 }
               }
             }
@@ -268,7 +271,7 @@
         }
       }
     },
-    "/{quizId}/status": {
+    "/quizzes/{quizId}/status": {
       "put": {
         "tags": [
           "Quiz",
@@ -284,15 +287,25 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "string",
-              "example": "number"
-            },
-            "description": "Quiz Id."
+              "type": "string"
+            }
           }
         ],
         "responses": {
           "200": {
-            "description": "Quiz status updated successfully"
+            "description": "Quiz status updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Quiz"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/Quiz"
+                }
+              }
+            }
           },
           "500": {
             "description": "Internal Server Error"
@@ -304,6 +317,201 @@
             "application/json": {
               "schema": {
                 "$ref": "#/components/schemas/UpdateQuizStatus"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/quizzes/{quizId}/questions/{questionId}": {
+      "get": {
+        "tags": [
+          "Question"
+        ],
+        "description": "Get one question",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "quizId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "questionId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Question fetched successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Question"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/Question"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Question not found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Question"
+        ],
+        "description": "Delete a question",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "quizId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "questionId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Question deleted successfully"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Question"
+        ],
+        "description": "Update a question",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "quizId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "questionId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Question status updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Question"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/Question"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateQuestion"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/quizzes/{quizId}/questions": {
+      "post": {
+        "tags": [
+          "Question"
+        ],
+        "description": "Create a question",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "quizId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Question created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Question"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/Question"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddQuestion"
               }
             }
           }
@@ -368,6 +576,50 @@
           "name": "Quiz"
         }
       },
+      "AddQuestion": {
+        "type": "object",
+        "properties": {
+          "text": {
+            "type": "string",
+            "example": "what?"
+          },
+          "choice0": {
+            "type": "string",
+            "example": "one"
+          },
+          "choice1": {
+            "type": "string",
+            "example": "two"
+          },
+          "choice2": {
+            "type": "string",
+            "example": "three"
+          },
+          "choice3": {
+            "type": "string",
+            "example": "four"
+          },
+          "correct0": {
+            "type": "number",
+            "example": 1
+          },
+          "correct1": {
+            "type": "number",
+            "example": 0
+          },
+          "correct2": {
+            "type": "number",
+            "example": 0
+          },
+          "correct3": {
+            "type": "number",
+            "example": 0
+          }
+        },
+        "xml": {
+          "name": "AddQuestion"
+        }
+      },
       "Question": {
         "type": "object",
         "properties": {
@@ -424,6 +676,50 @@
           "name": "Question"
         }
       },
+      "UpdateQuestion": {
+        "type": "object",
+        "properties": {
+          "text": {
+            "type": "string",
+            "example": "what?"
+          },
+          "choice0": {
+            "type": "string",
+            "example": "one"
+          },
+          "choice1": {
+            "type": "string",
+            "example": "two"
+          },
+          "choice2": {
+            "type": "string",
+            "example": "three"
+          },
+          "choice3": {
+            "type": "string",
+            "example": "four"
+          },
+          "correct0": {
+            "type": "number",
+            "example": 1
+          },
+          "correct1": {
+            "type": "number",
+            "example": 0
+          },
+          "correct2": {
+            "type": "number",
+            "example": 0
+          },
+          "correct3": {
+            "type": "number",
+            "example": 0
+          }
+        },
+        "xml": {
+          "name": "UpdateQuestion"
+        }
+      },
       "QuizExtended": {
         "type": "object",
         "properties": {
@@ -475,19 +771,26 @@
           "topicId": {
             "type": "number",
             "example": 1
-          },
-          "questions": {
-            "type": "array",
-            "items": {
-              "xml": {
-                "name": "question"
-              },
-              "$ref": "#/components/schemas/Question"
-            }
           }
         },
         "xml": {
           "name": "AddQuiz"
+        }
+      },
+      "UpdateQuiz": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Quiz"
+          },
+          "topicId": {
+            "type": "number",
+            "example": 1
+          }
+        },
+        "xml": {
+          "name": "UpdateQuiz"
         }
       },
       "UpdateQuizStatus": {
