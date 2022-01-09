@@ -66,6 +66,14 @@ async function getApprovedQuizzes(skip, take) {
   return result.rows;
 }
 
+async function searchQuizzes(query, status, skip, take) {
+  const result = await db.query(
+    'SELECT * FROM quizzes ORDER BY "id" WHERE "statusId" = $1 AND "text" LIKE $2 LIMIT $3 OFFSET $4',
+    [status, `%${query}%`, take, skip]
+  );
+  return result.rows;
+}
+
 module.exports = {
   createQuiz,
   deleteQuiz,
@@ -74,4 +82,5 @@ module.exports = {
   updateQuizStatus,
   getPendingQuizzes,
   getApprovedQuizzes,
+  searchQuizzes,
 };
