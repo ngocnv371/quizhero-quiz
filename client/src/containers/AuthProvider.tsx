@@ -9,9 +9,13 @@ export default function AuthProvider({
 }) {
   let [user, setUser] = React.useState<any>(null);
 
-  let signin = (newUser: string, callback: VoidFunction) => {
+  let signin = (email: string, password: string, callback: VoidFunction) => {
     return fakeAuthProvider.signin(() => {
-      setUser(newUser);
+      setUser({
+        email: email,
+        name: "Big Guy",
+        imageUrl: "https://i.pravatar.cc/300"
+      });
       callback();
     });
   };
