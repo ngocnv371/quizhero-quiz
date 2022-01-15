@@ -89,6 +89,17 @@ const doc = {
       statusId: 1,
     },
     QuizArray: [{ $ref: "#/definitions/Quiz" }],
+    QuizSearchResult: {
+      search: "query string",
+      topics: "1,2,3",
+      statuses: "1,2,3",
+      sort: "name",
+      order: "asc",
+      skip: 0,
+      take: 10,
+      total: 100,
+      rows: [{ $ref: "#/definitions/QuizArray" }],
+    },
   },
   components: {
     securitySchemes: {
