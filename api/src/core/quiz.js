@@ -104,6 +104,8 @@ async function searchQuizzes(
       take,
       sort,
       order,
+      statuses,
+      topics,
       query: search,
     };
   }
@@ -118,6 +120,8 @@ async function searchQuizzes(
     take,
     sort,
     order,
+    statuses,
+    topics,
     query: search,
   };
 }

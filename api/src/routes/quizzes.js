@@ -13,7 +13,7 @@ module.exports = (router) => {
   router.get("/quizzes", async (req, res) => {
     /*
       #swagger.tags = ["Quiz"]
-      #swagger.description = 'Get all approved quizzes'
+      #swagger.description = 'Get all quizzes'
     */
     res.setHeader("Content-Type", "application/json");
     const skip = Number(req.query.skip) || 0;

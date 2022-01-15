@@ -3,6 +3,7 @@ const {
   getQuestionById,
   deleteQuestion,
   updateQuestion,
+  searchQuestions,
 } = require("../core/question");
 
 module.exports = (router) => {
@@ -56,9 +57,13 @@ module.exports = (router) => {
         }
       }
     */
-   const { quizId } = req.params;
+    const { quizId } = req.params;
     try {
-      const question = await createQuestion({ ...req.body, quizId, createdById: 1 });
+      const question = await createQuestion({
+        ...req.body,
+        quizId,
+        createdById: 1,
+      });
       /*
         #swagger.responses[200] = {
           description: "Question created successfully",
@@ -122,6 +127,85 @@ module.exports = (router) => {
     } catch (error) {
       console.error(error);
       res.status(500).send();
+    }
+  });
+  router.get("/questions", async (req, res) => {
+    /*
+      #swagger.tags = ["Question"]
+      #swagger.description = 'Get all questions'
+    */
+    res.setHeader("Content-Type", "application/json");
+    const skip = Number(req.query.skip) || 0;
+    const take = Number(req.query.take) || 20;
+    const { query, quizzes, topics } = req.query;
+    const sort = req.query.sort || "name";
+    const order = req.query.order || "asc";
+
+    /*
+      #swagger.parameters['query'] = {
+        in: 'query',
+        description: 'Search by name.',
+        required: false,
+        type: 'string'
+      }
+      #swagger.parameters['quizzes'] = {
+        in: 'query',
+        description: 'Search by list of quizzes. Example: 1,2,3',
+        required: false,
+        type: 'string'
+      }
+      #swagger.parameters['topics'] = {
+        in: 'query',
+        description: 'Search by list of topics. Example: 1,2,3',
+        required: false,
+        type: 'string'
+      }
+      #swagger.parameters['skip'] = {
+        in: 'query',
+        description: 'How many elements to skip. Used for paging.',
+        required: false,
+        type: 'number'
+      } 
+      #swagger.parameters['take'] = {
+        in: 'query',
+        description: 'How many elements to take. Used for paging.',
+        required: false,
+        type: 'number'
+      } 
+      #swagger.parameters['sort'] = {
+        in: 'query',
+        description: 'Sort by field',
+        required: false,
+        type: 'string'
+      } 
+      #swagger.parameters['order'] = {
+        in: 'query',
+        description: 'Sort order.',
+        required: false,
+        type: 'string'
+      } 
+    */
+    try {
+      console.log(query, topics, quizzes, sort, order, skip, take);
+      const data = await searchQuestions(
+        query,
+        topics,
+        quizzes,
+        sort,
+        order,
+        skip,
+        take
+      );
+      /*
+        #swagger.responses[200] = {
+          description: "Questions fetched successfully",
+          schema: { $ref: "#/definitions/QuestionSearchResult" }
+        } 
+      */
+      res.send(data);
+    } catch (error) {
+      console.error(error);
+      res.status(500).send(error);
     }
   });
 };
