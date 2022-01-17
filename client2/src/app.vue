@@ -15,7 +15,7 @@ export default {
 </script>
 
 <template>
-  <v-app id="app">
+  <v-app id="app" dark>
     <RouterView name="navigation"></RouterView>
     <NavDrawer />
     <v-main>
