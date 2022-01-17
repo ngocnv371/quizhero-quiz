@@ -13,7 +13,8 @@ export default {
         value: 'id',
       },
       { text: 'Name', value: 'name' },
-      { text: 'Created By', value: 'createdById' },
+      { text: 'Topic', value: 'topicId' },
+      { text: 'Created By', value: 'createdById', sortable: false },
       { text: 'Actions', value: 'actions', sortable: false },
     ],
     localItems: [],
@@ -184,6 +185,11 @@ export default {
           </v-card>
         </v-dialog>
       </v-toolbar>
+    </template>
+    <template v-slot:item.createdById="{ item }">
+      <v-avatar dark size="36">
+        <img :src="`https://i.pravatar.cc/300?${item.id}`" alt="avatar" />
+      </v-avatar>
     </template>
     <template v-slot:item.actions="{ item }">
       <v-icon small class="mr-2" @click="editItem(item)">
