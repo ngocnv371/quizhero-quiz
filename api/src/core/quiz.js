@@ -99,7 +99,7 @@ async function searchQuizzes(
   if (!countResult.rowCount) {
     return {
       total: 0,
-      rows: [],
+      items: [],
       skip,
       take,
       sort,
@@ -115,7 +115,7 @@ async function searchQuizzes(
   const result = await db.query(query, params);
   return {
     total: Number(countResult.rows[0]["total"]),
-    rows: result.rows,
+    items: result.rows,
     skip,
     take,
     sort,

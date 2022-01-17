@@ -98,7 +98,7 @@ const doc = {
       skip: 0,
       take: 10,
       total: 100,
-      rows: [{ $ref: "#/definitions/QuizArray" }],
+      items: [{ $ref: "#/definitions/QuizArray" }],
     },
     QuestionArray: [{ $ref: "#/definitions/Question" }],
     QuestionSearchResult: {
@@ -110,7 +110,7 @@ const doc = {
       skip: 0,
       take: 10,
       total: 100,
-      rows: [{ $ref: "#/definitions/QuestionArray" }],
+      items: [{ $ref: "#/definitions/QuestionArray" }],
     },
   },
   components: {

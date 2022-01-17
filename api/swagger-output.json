@@ -937,7 +937,7 @@
             "type": "number",
             "example": 100
           },
-          "rows": {
+          "items": {
             "type": "array",
             "items": {
               "xml": {
@@ -998,7 +998,7 @@
             "type": "number",
             "example": 100
           },
-          "rows": {
+          "items": {
             "type": "array",
             "items": {
               "xml": {
