@@ -1,5 +1,6 @@
 <script>
 import { mapActions, mapState } from 'vuex'
+import { debounce } from 'lodash'
 
 export default {
   data: () => ({
@@ -18,6 +19,7 @@ export default {
       { text: 'Actions', value: 'actions', sortable: false },
     ],
     validForm: false,
+    localSearch: '',
     loading: false,
     error: '',
     options: {
@@ -60,10 +62,12 @@ export default {
     options: {
       deep: true,
       handler() {
-        console.log(this.options)
         this.reload()
       },
     },
+    localSearch: debounce(function() {
+      this.reload()
+    }, 1000),
   },
 
   async mounted() {
@@ -80,9 +84,15 @@ export default {
     async reload() {
       const skip = (this.options.page - 1) * this.options.itemsPerPage
       const take = this.options.itemsPerPage
+      const sort = this.options.sortBy.length ? this.options.sortBy[0] : 'name'
+      const order =
+        this.options.sortDesc.length && this.options.sortDesc[0]
+          ? 'desc'
+          : 'asc'
+      const query = this.localSearch
       this.loading = true
       try {
-        await this.loadQuizzes({ skip, take })
+        await this.loadQuizzes({ skip, take, query, sort, order })
       } catch (error) {
         this.error = error
       } finally {
@@ -160,6 +170,15 @@ export default {
     <template v-slot:top>
       <v-toolbar flat>
         <v-toolbar-title>Quizzes</v-toolbar-title>
+        <v-divider class="mx-4" inset vertical></v-divider>
+        <v-spacer></v-spacer>
+        <v-text-field
+          v-model="localSearch"
+          append-icon="search"
+          label="Search"
+          single-line
+          hide-details
+        ></v-text-field>
         <v-divider class="mx-4" inset vertical></v-divider>
         <v-spacer></v-spacer>
         <v-dialog v-model="dialog" max-width="500px" :persistent="loading">
@@ -261,7 +280,7 @@ export default {
       </v-icon>
     </template>
     <template v-slot:no-data>
-      <v-btn color="primary" :loading="loading" @click="initialize">
+      <v-btn color="primary" :loading="loading" @click="reload">
         Reset
       </v-btn>
     </template>
