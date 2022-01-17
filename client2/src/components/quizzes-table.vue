@@ -1,8 +1,11 @@
 <script>
 import { mapActions, mapState } from 'vuex'
 import { debounce } from 'lodash'
+import TopicPicker from './topic-picker.vue'
 
 export default {
+  name: 'QuizzesTable',
+  components: { TopicPicker },
   data: () => ({
     dialog: false,
     dialogDelete: false,
@@ -203,10 +206,7 @@ export default {
                       ></v-text-field>
                     </v-col>
                     <v-col cols="12" sm="6" md="4">
-                      <v-text-field
-                        v-model="editedItem.topicId"
-                        label="Topic"
-                      ></v-text-field>
+                      <TopicPicker v-model="editedItem.topicId" />
                     </v-col>
                   </v-row>
                 </v-container>
