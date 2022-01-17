@@ -1,19 +1,19 @@
 <script>
 import appConfig from '@src/app.config'
 import Layout from '@layouts/main.vue'
+import QuizzesTable from '@components/quizzes-table.vue'
 
 export default {
   page: {
     title: 'Home',
     meta: [{ name: 'description', content: appConfig.description }],
   },
-  components: { Layout },
+  components: { Layout, QuizzesTable },
 }
 </script>
 
 <template>
   <Layout>
-    <h1>Home Page</h1>
-    <img src="@assets/images/logo.png" alt="Logo" />
+    <QuizzesTable />
   </Layout>
 </template>
