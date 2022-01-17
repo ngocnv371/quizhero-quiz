@@ -17,6 +17,9 @@ export default {
       { text: 'Created By', value: 'createdById', sortable: false },
       { text: 'Actions', value: 'actions', sortable: false },
     ],
+    validForm: false,
+    loading: false,
+    error: '',
     localItems: [],
     editedIndex: -1,
     editedItem: {
@@ -56,7 +59,7 @@ export default {
   },
 
   methods: {
-    ...mapActions('quizzes', ['loadQuizzes']),
+    ...mapActions('quizzes', ['loadQuizzes', 'saveQuiz']),
     async initialize() {
       this.loading = true
       try {
@@ -102,13 +105,20 @@ export default {
       })
     },
 
-    save() {
-      if (this.editedIndex > -1) {
-        Object.assign(this.localItems[this.editedIndex], this.editedItem)
-      } else {
-        this.localItems.push(this.editedItem)
+    async save() {
+      this.loading = true
+      try {
+        if (this.editedIndex > -1) {
+          await this.saveQuiz(this.editedItem)
+        } else {
+          await this.saveQuiz(this.editedItem)
+        }
+      } catch (error) {
+        this.error = error
+      } finally {
+        this.loading = false
+        this.close()
       }
-      this.close()
     },
   },
 }
@@ -117,7 +127,7 @@ export default {
 <template>
   <v-data-table
     :headers="headers"
-    :items="localItems"
+    :items="items"
     sort-by="calories"
     class="elevation-1"
   >
@@ -126,7 +136,7 @@ export default {
         <v-toolbar-title>Quizzes</v-toolbar-title>
         <v-divider class="mx-4" inset vertical></v-divider>
         <v-spacer></v-spacer>
-        <v-dialog v-model="dialog" max-width="500px">
+        <v-dialog v-model="dialog" max-width="500px" :persistent="loading">
           <template v-slot:activator="{ on, attrs }">
             <v-btn color="primary" dark class="mb-2" v-bind="attrs" v-on="on">
               New Item
@@ -138,46 +148,66 @@ export default {
             </v-card-title>
 
             <v-card-text>
-              <v-container>
-                <v-row>
-                  <v-col cols="12" sm="6" md="8">
-                    <v-text-field
-                      v-model="editedItem.name"
-                      label="Quiz name"
-                    ></v-text-field>
-                  </v-col>
-                  <v-col cols="12" sm="6" md="4">
-                    <v-text-field
-                      v-model="editedItem.topicId"
-                      label="Topic"
-                    ></v-text-field>
-                  </v-col>
-                </v-row>
-              </v-container>
+              <v-form v-model="validForm">
+                <v-container>
+                  <v-row>
+                    <v-col cols="12" sm="6" md="8">
+                      <v-text-field
+                        v-model="editedItem.name"
+                        label="Quiz name"
+                      ></v-text-field>
+                    </v-col>
+                    <v-col cols="12" sm="6" md="4">
+                      <v-text-field
+                        v-model="editedItem.topicId"
+                        label="Topic"
+                      ></v-text-field>
+                    </v-col>
+                  </v-row>
+                </v-container>
+              </v-form>
             </v-card-text>
 
             <v-card-actions>
               <v-spacer></v-spacer>
-              <v-btn color="blue darken-1" text @click="close">
+              <v-btn text :disabled="loading" @click="close">
                 Cancel
               </v-btn>
-              <v-btn color="blue darken-1" text @click="save">
+              <v-btn
+                color="primary darken-1"
+                text
+                :disabled="!validForm"
+                :loading="loading"
+                @click="save"
+              >
                 Save
               </v-btn>
             </v-card-actions>
           </v-card>
         </v-dialog>
-        <v-dialog v-model="dialogDelete" max-width="500px">
+        <v-dialog
+          v-model="dialogDelete"
+          max-width="500px"
+          :persistent="loading"
+        >
           <v-card>
             <v-card-title class="text-h5"
               >Are you sure you want to delete this item?</v-card-title
             >
             <v-card-actions>
               <v-spacer></v-spacer>
-              <v-btn color="blue darken-1" text @click="closeDelete"
+              <v-btn
+                color="blue darken-1"
+                text
+                :disabled="loading"
+                @click="closeDelete"
                 >Cancel</v-btn
               >
-              <v-btn color="blue darken-1" text @click="deleteItemConfirm"
+              <v-btn
+                color="error darken-1"
+                text
+                :loading="loading"
+                @click="deleteItemConfirm"
                 >OK</v-btn
               >
               <v-spacer></v-spacer>
@@ -192,15 +222,15 @@ export default {
       </v-avatar>
     </template>
     <template v-slot:item.actions="{ item }">
-      <v-icon small class="mr-2" @click="editItem(item)">
+      <v-icon small class="mr-2" :disabled="loading" @click="editItem(item)">
         edit
       </v-icon>
-      <v-icon small @click="deleteItem(item)">
+      <v-icon small :disabled="loading" @click="deleteItem(item)">
         trash
       </v-icon>
     </template>
     <template v-slot:no-data>
-      <v-btn color="primary" @click="initialize">
+      <v-btn color="primary" :loading="loading" @click="initialize">
         Reset
       </v-btn>
     </template>
