@@ -58,7 +58,12 @@ export default {
   },
 
   methods: {
-    ...mapActions('quizzes', ['loadQuizzes', 'saveQuiz', 'deleteQuiz']),
+    ...mapActions('quizzes', [
+      'loadQuizzes',
+      'updateQuiz',
+      'createQuiz',
+      'deleteQuiz',
+    ]),
     async initialize() {
       this.loading = true
       try {
@@ -113,10 +118,10 @@ export default {
     async save() {
       this.loading = true
       try {
-        if (this.editedIndex > -1) {
-          await this.saveQuiz(this.editedItem)
+        if (this.editedItem.id) {
+          await this.updateQuiz(this.editedItem)
         } else {
-          await this.saveQuiz(this.editedItem)
+          await this.createQuiz(this.editedItem)
         }
         this.close()
       } catch (error) {

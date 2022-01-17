@@ -64,7 +64,20 @@ export const actions = {
       return data
     })
   },
-  saveQuiz({ commit }, payload) {
+  createQuiz({ commit }, payload) {
+    const { name, topicId } = payload
+    return axios
+      .post(`/quizzes`, {
+        name,
+        topicId,
+      })
+      .then((response) => {
+        const data = response.data
+        commit('ADD_ITEM', data)
+        return data
+      })
+  },
+  updateQuiz({ commit }, payload) {
     const { id, name, topicId } = payload
     return axios
       .put(`/quizzes/${id}`, {
