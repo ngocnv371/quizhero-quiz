@@ -20,7 +20,6 @@ export default {
     validForm: false,
     loading: false,
     error: '',
-    localItems: [],
     editedIndex: -1,
     editedItem: {
       id: 0,
@@ -59,12 +58,11 @@ export default {
   },
 
   methods: {
-    ...mapActions('quizzes', ['loadQuizzes', 'saveQuiz']),
+    ...mapActions('quizzes', ['loadQuizzes', 'saveQuiz', 'deleteQuiz']),
     async initialize() {
       this.loading = true
       try {
-        const data = await this.loadQuizzes()
-        this.localItems = data.items
+        await this.loadQuizzes()
       } catch (error) {
         this.error = error
       } finally {
@@ -73,20 +71,27 @@ export default {
     },
 
     editItem(item) {
-      this.editedIndex = this.localItems.indexOf(item)
+      this.editedIndex = this.items.indexOf(item)
       this.editedItem = Object.assign({}, item)
       this.dialog = true
     },
 
     deleteItem(item) {
-      this.editedIndex = this.localItems.indexOf(item)
+      this.editedIndex = this.items.indexOf(item)
       this.editedItem = Object.assign({}, item)
       this.dialogDelete = true
     },
 
-    deleteItemConfirm() {
-      this.localItems.splice(this.editedIndex, 1)
-      this.closeDelete()
+    async deleteItemConfirm() {
+      try {
+        this.loading = true
+        await this.deleteQuiz(this.editedItem)
+        this.closeDelete()
+      } catch (error) {
+        this.error = error
+      } finally {
+        this.loading = false
+      }
     },
 
     close() {
@@ -113,11 +118,11 @@ export default {
         } else {
           await this.saveQuiz(this.editedItem)
         }
+        this.close()
       } catch (error) {
         this.error = error
       } finally {
         this.loading = false
-        this.close()
       }
     },
   },
@@ -194,6 +199,11 @@ export default {
             <v-card-title class="text-h5"
               >Are you sure you want to delete this item?</v-card-title
             >
+            <v-card-text v-if="error">
+              <v-alert dense outlined type="error">
+                <p v-text="error"></p>
+              </v-alert>
+            </v-card-text>
             <v-card-actions>
               <v-spacer></v-spacer>
               <v-btn

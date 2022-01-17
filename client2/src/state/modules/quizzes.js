@@ -77,4 +77,12 @@ export const actions = {
         return data
       })
   },
+  deleteQuiz({ commit }, payload) {
+    const { id } = payload
+    return axios.delete(`/quizzes/${id}`).then((response) => {
+      const data = response.data
+      commit('REMOVE_ITEM', data)
+      return data
+    })
+  },
 }
