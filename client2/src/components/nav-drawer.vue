@@ -26,10 +26,10 @@ export default {
     <v-list-item>
       <v-list-item-content>
         <v-list-item-title class="text-h6">
-          Delve
+          Quizzes
         </v-list-item-title>
         <v-list-item-subtitle>
-          deep
+          control panel
         </v-list-item-subtitle>
       </v-list-item-content>
     </v-list-item>

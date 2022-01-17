@@ -183,7 +183,7 @@ export default {
         <v-spacer></v-spacer>
         <v-dialog v-model="dialog" max-width="500px" :persistent="loading">
           <template v-slot:activator="{ on, attrs }">
-            <v-btn color="primary" dark class="mb-2" v-bind="attrs" v-on="on">
+            <v-btn color="primary" class="mb-2" v-bind="attrs" v-on="on">
               New Item
             </v-btn>
           </template>
@@ -219,7 +219,7 @@ export default {
                 Cancel
               </v-btn>
               <v-btn
-                color="primary darken-1"
+                color="primary"
                 text
                 :disabled="!validForm"
                 :loading="loading"
@@ -246,15 +246,11 @@ export default {
             </v-card-text>
             <v-card-actions>
               <v-spacer></v-spacer>
-              <v-btn
-                color="blue darken-1"
-                text
-                :disabled="loading"
-                @click="closeDelete"
+              <v-btn text :disabled="loading" @click="closeDelete"
                 >Cancel</v-btn
               >
               <v-btn
-                color="error darken-1"
+                color="error"
                 text
                 :loading="loading"
                 @click="deleteItemConfirm"
@@ -267,7 +263,7 @@ export default {
       </v-toolbar>
     </template>
     <template v-slot:item.createdById="{ item }">
-      <v-avatar dark size="36">
+      <v-avatar size="36">
         <img :src="`https://i.pravatar.cc/300?${item.id}`" alt="avatar" />
       </v-avatar>
     </template>
