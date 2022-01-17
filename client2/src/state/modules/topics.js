@@ -10,6 +10,7 @@ export const state = [
 
 export const getters = {
   topics: (state) => state,
+  getTopicById: (id) => state.find((i) => i.id === id),
 }
 
 export const mutations = {}

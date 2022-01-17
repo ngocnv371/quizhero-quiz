@@ -2,10 +2,11 @@
 import { mapActions, mapState } from 'vuex'
 import { debounce } from 'lodash'
 import TopicPicker from './topic-picker.vue'
+import TopicLabel from './topic-label.vue'
 
 export default {
   name: 'QuizzesTable',
-  components: { TopicPicker },
+  components: { TopicPicker, TopicLabel },
   data: () => ({
     dialog: false,
     dialogDelete: false,
@@ -158,6 +159,10 @@ export default {
         this.loading = false
       }
     },
+
+    onTopicClick(topicId) {
+      console.log(topicId)
+    },
   },
 }
 </script>
@@ -182,6 +187,7 @@ export default {
           single-line
           hide-details
         ></v-text-field>
+        <TopicPicker class="pl-2" />
         <v-divider class="mx-4" inset vertical></v-divider>
         <v-spacer></v-spacer>
         <v-dialog v-model="dialog" max-width="500px" :persistent="loading">
@@ -261,6 +267,11 @@ export default {
           </v-card>
         </v-dialog>
       </v-toolbar>
+    </template>
+    <template v-slot:item.topicId="{ item }">
+      <a @click="onTopicClick(item.topicId)">
+        <TopicLabel :id="item.topicId" />
+      </a>
     </template>
     <template v-slot:item.createdById="{ item }">
       <v-avatar size="36">
