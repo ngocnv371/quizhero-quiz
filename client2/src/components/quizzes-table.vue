@@ -20,6 +20,12 @@ export default {
     validForm: false,
     loading: false,
     error: '',
+    options: {
+      itemsPerPage: 20,
+      page: 1,
+      sortBy: ['name'],
+      sortDesc: [false],
+    },
     editedIndex: -1,
     editedItem: {
       id: 0,
@@ -38,7 +44,7 @@ export default {
   }),
 
   computed: {
-    ...mapState('quizzes', ['items', 'search', 'take']),
+    ...mapState('quizzes', ['items', 'search', 'take', 'total']),
     formTitle() {
       return this.editedIndex === -1 ? 'New Item' : 'Edit Item'
     },
@@ -51,10 +57,17 @@ export default {
     dialogDelete(val) {
       val || this.closeDelete()
     },
+    options: {
+      deep: true,
+      handler() {
+        console.log(this.options)
+        this.reload()
+      },
+    },
   },
 
   async mounted() {
-    await this.initialize()
+    await this.reload()
   },
 
   methods: {
@@ -64,10 +77,12 @@ export default {
       'createQuiz',
       'deleteQuiz',
     ]),
-    async initialize() {
+    async reload() {
+      const skip = (this.options.page - 1) * this.options.itemsPerPage
+      const take = this.options.itemsPerPage
       this.loading = true
       try {
-        await this.loadQuizzes()
+        await this.loadQuizzes({ skip, take })
       } catch (error) {
         this.error = error
       } finally {
@@ -138,7 +153,8 @@ export default {
   <v-data-table
     :headers="headers"
     :items="items"
-    sort-by="calories"
+    :server-items-length="total"
+    :options.sync="options"
     class="elevation-1"
   >
     <template v-slot:top>

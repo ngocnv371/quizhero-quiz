@@ -50,8 +50,8 @@ export const mutations = {
 }
 
 export const actions = {
-  loadQuizzes({ commit }) {
-    return axios.get('/quizzes').then((response) => {
+  loadQuizzes({ commit }, { skip, take }) {
+    return axios.get(`/quizzes?skip=${skip}&take=${take}`).then((response) => {
       const data = response.data
       commit('SET_SORT', data.sort)
       commit('SET_ORDER', data.order)
