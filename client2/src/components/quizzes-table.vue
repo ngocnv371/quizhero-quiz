@@ -201,7 +201,7 @@ export default {
     :server-items-length="total"
     :options.sync="options"
     :loading="loading"
-    class="elevation-1 mx-auto"
+    class="elevation-1"
   >
     <template v-slot:top>
       <v-toolbar flat>

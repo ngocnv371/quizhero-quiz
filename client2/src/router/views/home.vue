@@ -14,6 +14,8 @@ export default {
 
 <template>
   <Layout>
-    <QuizzesTable />
+    <div style="min-height: 500px; align-self: start" class="mx-auto">
+      <QuizzesTable />
+    </div>
   </Layout>
 </template>
