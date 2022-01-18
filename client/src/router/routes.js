@@ -19,6 +19,23 @@ export default [
     },
   },
   {
+    path: '/my-questions',
+    name: 'questions',
+    components: {
+      default: () => lazyLoadView(import('@views/questions.vue')),
+      navigation: () => lazyLoadView(import('@components/app-bar.vue')),
+    },
+    meta: {
+      beforeResolve(routeTo, routeFrom, next) {
+        if (!store.getters['auth/loggedIn']) {
+          next({ name: 'login' })
+        } else {
+          next()
+        }
+      },
+    },
+  },
+  {
     path: '/login',
     name: 'login',
     component: () => lazyLoadView(import('@views/login.vue')),

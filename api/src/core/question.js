@@ -2,17 +2,17 @@ const db = require("../db");
 
 async function createQuestion(q) {
   const query = `INSERT INTO questions(
-	  "text", "quizId", 
-	  "choice0", "choice1", "choice2", "choice3", 
-	  "correct0", "correct1", "correct2", "correct3", 
+	  "text", "quizId",
+	  "choice0", "choice1", "choice2", "choice3",
+	  "correct0", "correct1", "correct2", "correct3",
 	  "createdById"
-	  ) 
+	  )
 	  VALUES (
-		$1, $2, 
-		$3, $4, $5, $6, 
+		$1, $2,
+		$3, $4, $5, $6,
 		$7, $8, $9, $10,
 		$11
-	  ) 
+	  )
 	  RETURNING *`;
   const result = await db.query(query, [
     q.text,
@@ -38,7 +38,7 @@ async function createQuestion(q) {
 
 async function updateQuestion(id, data) {
   const result = await db.query(
-    `UPDATE questions 
+    `UPDATE questions
 		SET
 		  "text" = $1,
 		  "choice0" = $2,
@@ -157,7 +157,13 @@ async function searchQuestions(
   const result = await db.query(query, params);
   return {
     total: Number(countResult.rows[0]["total"]),
-    items: result.rows,
+    items: result.rows.map((r) => ({
+      ...r,
+      correct0: Number(r.correct0),
+      correct1: Number(r.correct1),
+      correct2: Number(r.correct2),
+      correct3: Number(r.correct3),
+    })),
     skip,
     take,
     sort,

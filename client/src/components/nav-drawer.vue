@@ -37,6 +37,9 @@ export default {
     <v-divider></v-divider>
     <v-list nav dense>
       <v-list-item-group active-class="deep-purple--text text--accent-4">
+        <v-list-item to="/my-questions">
+          <v-list-item-title>Questions</v-list-item-title>
+        </v-list-item>
         <v-list-item to="/about">
           <v-list-item-title>About</v-list-item-title>
         </v-list-item>
