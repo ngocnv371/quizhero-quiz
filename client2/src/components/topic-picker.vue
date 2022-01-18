@@ -30,7 +30,7 @@ export default {
     item-text="name"
     item-value="id"
   >
-    <template v-slot:selection="data">
+    <template v-if="multiple" v-slot:selection="data">
       <span
         v-if="localValue.length === 1"
         class="pr-2"

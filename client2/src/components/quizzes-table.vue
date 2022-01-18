@@ -77,6 +77,18 @@ export default {
     localSearch: debounce(function() {
       this.reload()
     }, 1000),
+    topics: {
+      deep: true,
+      handler() {
+        this.reload()
+      },
+    },
+    statuses: {
+      deep: true,
+      handler() {
+        this.reload()
+      },
+    },
   },
 
   async mounted() {
@@ -99,9 +111,19 @@ export default {
           ? 'desc'
           : 'asc'
       const query = this.localSearch
+      const topicsList = this.topics.join(',')
+      const statusesList = this.statuses.join(',')
       this.loading = true
       try {
-        await this.loadQuizzes({ skip, take, query, sort, order })
+        await this.loadQuizzes({
+          skip,
+          take,
+          query,
+          sort,
+          order,
+          topics: topicsList,
+          statuses: statusesList,
+        })
       } catch (error) {
         this.error = error
       } finally {
