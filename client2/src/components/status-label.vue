@@ -1,11 +1,5 @@
 <script>
-const statuses = [
-  { id: 1, text: 'Draft', color: '' },
-  { id: 2, text: 'Pending', color: 'secondary' },
-  { id: 3, text: 'Approved', color: 'primary' },
-  { id: 4, text: 'Rejected', color: 'error' },
-  { id: 5, text: 'Deleted', color: 'pink' },
-]
+import { mapGetters } from 'vuex'
 export default {
   name: 'StatusLabel',
   props: {
@@ -15,11 +9,12 @@ export default {
     },
   },
   computed: {
+    ...mapGetters('statuses', ['statuses']),
     text() {
-      return statuses[this.id - 1].text
+      return this.statuses.find((s) => s.id === this.id).name
     },
     color() {
-      return statuses[this.id - 1].color
+      return this.statuses.find((s) => s.id === this.id).color
     },
   },
 }

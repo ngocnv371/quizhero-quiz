@@ -4,10 +4,11 @@ import { debounce } from 'lodash'
 import TopicPicker from './topic-picker.vue'
 import TopicLabel from './topic-label.vue'
 import StatusLabel from './status-label.vue'
+import StatusPicker from './status-picker.vue'
 
 export default {
   name: 'QuizzesTable',
-  components: { TopicPicker, TopicLabel, StatusLabel },
+  components: { TopicPicker, TopicLabel, StatusLabel, StatusPicker },
   data: () => ({
     dialog: false,
     dialogDelete: false,
@@ -192,6 +193,7 @@ export default {
           hide-details
         ></v-text-field>
         <TopicPicker v-model="topics" multiple class="pl-2" />
+        <StatusPicker v-model="topics" multiple class="pl-2" />
         <v-divider class="mx-4" inset vertical></v-divider>
         <v-spacer></v-spacer>
         <v-dialog v-model="dialog" max-width="500px" :persistent="loading">

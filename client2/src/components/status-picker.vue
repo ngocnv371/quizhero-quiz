@@ -3,7 +3,7 @@ import { mapGetters } from 'vuex'
 import forwardModel from '@src/mixins/forward-model'
 
 export default {
-  name: 'TopicPicker',
+  name: 'StatusPicker',
   mixins: [forwardModel],
   props: {
     multiple: {
@@ -13,7 +13,7 @@ export default {
     },
   },
   computed: {
-    ...mapGetters('topics', ['topics']),
+    ...mapGetters('statuses', ['statuses']),
   },
 }
 </script>
@@ -21,12 +21,12 @@ export default {
 <template>
   <v-autocomplete
     v-model="localValue"
-    :items="topics"
+    :items="statuses"
     :multiple="multiple"
     flat
     hide-no-data
     hide-details
-    label="Topic"
+    label="Status"
     item-text="name"
     item-value="id"
   >
