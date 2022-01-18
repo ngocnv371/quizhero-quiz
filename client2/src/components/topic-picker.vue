@@ -5,6 +5,13 @@ import forwardModel from '@src/mixins/forward-model'
 export default {
   name: 'TopicPicker',
   mixins: [forwardModel],
+  props: {
+    multiple: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+  },
   computed: {
     ...mapGetters('topics', ['topics']),
   },
@@ -15,6 +22,7 @@ export default {
   <v-autocomplete
     v-model="localValue"
     :items="topics"
+    :multiple="multiple"
     flat
     hide-no-data
     hide-details

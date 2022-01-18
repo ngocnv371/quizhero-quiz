@@ -3,10 +3,11 @@ import { mapActions, mapState } from 'vuex'
 import { debounce } from 'lodash'
 import TopicPicker from './topic-picker.vue'
 import TopicLabel from './topic-label.vue'
+import StatusLabel from './status-label.vue'
 
 export default {
   name: 'QuizzesTable',
-  components: { TopicPicker, TopicLabel },
+  components: { TopicPicker, TopicLabel, StatusLabel },
   data: () => ({
     dialog: false,
     dialogDelete: false,
@@ -19,12 +20,14 @@ export default {
       },
       { text: 'Name', value: 'name' },
       { text: 'Topic', value: 'topicId' },
+      { text: 'Status', value: 'statusId' },
       { text: 'Created By', value: 'createdById', sortable: false },
       { text: 'Actions', value: 'actions', sortable: false },
     ],
     validForm: false,
     localSearch: '',
     loading: false,
+    topics: [],
     error: '',
     options: {
       itemsPerPage: 20,
@@ -187,7 +190,7 @@ export default {
           single-line
           hide-details
         ></v-text-field>
-        <TopicPicker class="pl-2" />
+        <TopicPicker v-model="topics" multiple class="pl-2" />
         <v-divider class="mx-4" inset vertical></v-divider>
         <v-spacer></v-spacer>
         <v-dialog v-model="dialog" max-width="500px" :persistent="loading">
@@ -272,6 +275,9 @@ export default {
       <a @click="onTopicClick(item.topicId)">
         <TopicLabel :id="item.topicId" />
       </a>
+    </template>
+    <template v-slot:item.statusId="{ item }">
+      <StatusLabel :id="item.statusId" />
     </template>
     <template v-slot:item.createdById="{ item }">
       <v-avatar size="36">
