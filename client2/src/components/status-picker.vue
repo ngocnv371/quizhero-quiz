@@ -30,6 +30,18 @@ export default {
     item-text="name"
     item-value="id"
   >
+    <template v-slot:selection="data">
+      <span
+        v-if="localValue.length === 1"
+        class="pr-2"
+        v-text="data.item.name"
+      ></span>
+      <span
+        v-else-if="data.index === 0"
+        class="pr-2"
+        v-text="`${localValue.length} items`"
+      ></span>
+    </template>
     <template v-slot:item="data">
       <v-list-item-content>
         <v-list-item-title v-text="data.item.name"></v-list-item-title>

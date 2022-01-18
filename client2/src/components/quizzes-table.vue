@@ -29,6 +29,7 @@ export default {
     localSearch: '',
     loading: false,
     topics: [],
+    statuses: [],
     error: '',
     options: {
       itemsPerPage: 20,
@@ -191,9 +192,20 @@ export default {
           label="Search"
           single-line
           hide-details
+          style="width: 300px"
         ></v-text-field>
-        <TopicPicker v-model="topics" multiple class="pl-2" />
-        <StatusPicker v-model="topics" multiple class="pl-2" />
+        <TopicPicker
+          v-model="topics"
+          multiple
+          class="pl-2"
+          style="width: 300px"
+        />
+        <StatusPicker
+          v-model="statuses"
+          multiple
+          class="pl-2"
+          style="width: 300px"
+        />
         <v-divider class="mx-4" inset vertical></v-divider>
         <v-spacer></v-spacer>
         <v-dialog v-model="dialog" max-width="500px" :persistent="loading">
