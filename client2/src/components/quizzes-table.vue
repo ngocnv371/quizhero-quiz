@@ -186,10 +186,6 @@ export default {
         this.loading = false
       }
     },
-
-    onTopicClick(topicId) {
-      console.log(topicId)
-    },
   },
 }
 </script>
@@ -309,9 +305,7 @@ export default {
       </v-toolbar>
     </template>
     <template v-slot:item.topicId="{ item }">
-      <a @click="onTopicClick(item.topicId)">
-        <TopicLabel :id="item.topicId" />
-      </a>
+      <TopicLabel :id="item.topicId" />
     </template>
     <template v-slot:item.statusId="{ item }">
       <StatusLabel :id="item.statusId" />
