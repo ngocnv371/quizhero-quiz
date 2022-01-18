@@ -19,14 +19,14 @@ export default {
         value: 'id',
       },
       { text: 'Text', value: 'text' },
-      { text: 'Question', value: 'quizId' },
+      { text: 'Quiz', value: 'quizId' },
       { text: 'Actions', value: 'actions', sortable: false },
     ],
     validForm: false,
     localSearch: '',
     loading: false,
     topics: [],
-    statuses: [],
+    quizzes: [],
     error: '',
     options: {
       itemsPerPage: 20,
@@ -125,7 +125,7 @@ export default {
           : 'asc'
       const query = this.localSearch
       const topicsList = this.topics.join(',')
-      const statusesList = this.statuses.join(',')
+      const quizzesList = this.quizzes.join(',')
       this.loading = true
       try {
         await this.loadQuestions({
@@ -135,7 +135,7 @@ export default {
           sort,
           order,
           topics: topicsList,
-          statuses: statusesList,
+          quizzes: quizzesList,
         })
       } catch (error) {
         this.error = error
@@ -234,11 +234,6 @@ export default {
         <v-divider class="mx-4" inset vertical></v-divider>
         <v-spacer></v-spacer>
         <v-dialog v-model="dialog" max-width="500px" :persistent="loading">
-          <template v-slot:activator="{ on, attrs }">
-            <v-btn color="primary" class="mb-2" v-bind="attrs" v-on="on">
-              New Item
-            </v-btn>
-          </template>
           <v-card>
             <v-card-title>
               <span class="text-h5">{{ formTitle }}</span>

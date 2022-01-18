@@ -90,10 +90,10 @@ export const actions = {
         choice1,
         choice2,
         choice3,
-        correct0,
-        correct1,
-        correct2,
-        correct3,
+        correct0: correct0 ? 1 : 0,
+        correct1: correct1 ? 1 : 0,
+        correct2: correct2 ? 1 : 0,
+        correct3: correct3 ? 1 : 0,
       })
       .then((response) => {
         const data = response.data
@@ -122,10 +122,10 @@ export const actions = {
         choice1,
         choice2,
         choice3,
-        correct0,
-        correct1,
-        correct2,
-        correct3,
+        correct0: correct0 ? 1 : 0,
+        correct1: correct1 ? 1 : 0,
+        correct2: correct2 ? 1 : 0,
+        correct3: correct3 ? 1 : 0,
       })
       .then((response) => {
         const data = response.data
