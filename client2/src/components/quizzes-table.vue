@@ -176,6 +176,7 @@ export default {
     :items="items"
     :server-items-length="total"
     :options.sync="options"
+    :loading="loading"
     class="elevation-1 mx-auto"
   >
     <template v-slot:top>
