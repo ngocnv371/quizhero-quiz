@@ -9,6 +9,13 @@ import QuizPicker from './quiz-picker.vue'
 export default {
   name: 'QuestionsTable',
   components: { TopicPicker, TopicLabel, StatusLabel, QuizPicker },
+  props: {
+    initialQuizzes: {
+      required: false,
+      type: Array,
+      default: () => [],
+    },
+  },
   data: () => ({
     dialog: false,
     dialogDelete: false,
@@ -106,6 +113,8 @@ export default {
   },
 
   async mounted() {
+    this.quizzes = this.initialQuizzes
+    console.log(this.quizzes, this.initialQuizzes)
     await this.reload()
   },
 

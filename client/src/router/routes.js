@@ -19,7 +19,7 @@ export default [
     },
   },
   {
-    path: '/my-questions',
+    path: '/questions',
     name: 'questions',
     components: {
       default: () => lazyLoadView(import('@views/questions.vue')),
