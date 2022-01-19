@@ -328,10 +328,5 @@ export default {
         trash
       </v-icon>
     </template>
-    <template v-slot:no-data>
-      <v-btn color="primary" :loading="loading" @click="reload">
-        Reset
-      </v-btn>
-    </template>
   </v-data-table>
 </template>

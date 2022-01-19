@@ -114,7 +114,6 @@ export default {
 
   async mounted() {
     this.quizzes = this.initialQuizzes
-    console.log(this.quizzes, this.initialQuizzes)
     await this.reload()
   },
 
@@ -410,11 +409,6 @@ export default {
       <v-icon small :disabled="loading" @click="deleteItem(item)">
         trash
       </v-icon>
-    </template>
-    <template v-slot:no-data>
-      <v-btn color="primary" :loading="loading" @click="reload">
-        Reset
-      </v-btn>
     </template>
   </v-data-table>
 </template>
