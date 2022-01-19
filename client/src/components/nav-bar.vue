@@ -1,46 +1,28 @@
 <script>
-import { authComputed } from '@state/helpers'
 import NavBarRoutes from './nav-bar-routes.vue'
 
 export default {
   components: { NavBarRoutes },
   data() {
     return {
-      persistentNavRoutes: [
-        {
-          name: 'home',
-          title: 'Home',
-        },
-      ],
       loggedInNavRoutes: [
         {
-          name: 'profile',
-          title: () => 'Logged in as ' + this.currentUser.name,
+          name: 'home',
+          title: 'Quizzes',
         },
         {
-          name: 'logout',
-          title: 'Log out',
-        },
-      ],
-      loggedOutNavRoutes: [
-        {
-          name: 'login',
-          title: 'Log in',
+          name: 'questions',
+          title: 'Questions',
         },
       ],
     }
-  },
-  computed: {
-    ...authComputed,
   },
 }
 </script>
 
 <template>
   <ul :class="$style.container">
-    <NavBarRoutes :routes="persistentNavRoutes" />
-    <NavBarRoutes v-if="loggedIn" :routes="loggedInNavRoutes" />
-    <NavBarRoutes v-else :routes="loggedOutNavRoutes" />
+    <NavBarRoutes v-if="$auth.isAuthenticated" :routes="loggedInNavRoutes" />
   </ul>
 </template>
 

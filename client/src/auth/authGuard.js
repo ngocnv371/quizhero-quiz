@@ -1,3 +1,4 @@
+import axios from 'axios'
 import { getInstance } from './authWrapper'
 
 export const authGuard = (to, from, next) => {
@@ -5,7 +6,12 @@ export const authGuard = (to, from, next) => {
 
   const fn = () => {
     if (authService.isAuthenticated) {
-      return next()
+      authService.getTokenSilently().then((token) => {
+        axios.defaults.headers.common.Authorization = `Bearer ${token}`
+        next()
+      })
+
+      return
     }
 
     authService.loginWithRedirect({ appState: { targetUrl: to.fullPath } })

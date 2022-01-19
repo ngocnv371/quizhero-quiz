@@ -1,10 +1,8 @@
 <script>
-import { authComputed } from '@state/helpers'
 import { mapMutations, mapState } from 'vuex'
 
 export default {
   computed: {
-    ...authComputed,
     ...mapState('nav', ['drawer']),
   },
   methods: {
@@ -17,7 +15,7 @@ export default {
 </script>
 
 <template>
-  <v-app-bar v-if="loggedIn" color="deep-purple accent-4" dark app>
+  <v-app-bar v-if="$auth.isAuthenticated" color="deep-purple accent-4" dark app>
     <v-app-bar-nav-icon @click.stop="toggle"></v-app-bar-nav-icon>
 
     <v-toolbar-title>{{ $route.name }}</v-toolbar-title>
@@ -25,7 +23,7 @@ export default {
     <router-link to="/questions"></router-link>
     <v-spacer />
     <slot>
-      <v-avatar v-if="$auth.isAuthenticated">
+      <v-avatar>
         <v-img :src="$auth.user.picture" />
       </v-avatar>
     </slot>
