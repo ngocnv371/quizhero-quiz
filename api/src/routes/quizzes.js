@@ -7,6 +7,7 @@ const {
   getApprovedQuizzes,
   getPendingQuizzes,
   searchQuizzes,
+  getQuizzesByIds,
 } = require("../core/quiz");
 
 module.exports = (router) => {
@@ -18,14 +19,20 @@ module.exports = (router) => {
     res.setHeader("Content-Type", "application/json");
     const skip = Number(req.query.skip) || 0;
     const take = Number(req.query.take) || 20;
-    const { query, statuses, topics } = req.query;
-    const sort = req.query.sort || 'name';
-    const order = req.query.order || 'asc';
+    const { query, statuses, topics, ids } = req.query;
+    const sort = req.query.sort || "name";
+    const order = req.query.order || "asc";
 
     /*
       #swagger.parameters['query'] = {
         in: 'query',
         description: 'Search by name.',
+        required: false,
+        type: 'string'
+      }
+      #swagger.parameters['ids'] = {
+        in: 'query',
+        description: 'Search by list of IDs. Example: 1,2,3',
         required: false,
         type: 'string'
       }
@@ -46,38 +53,50 @@ module.exports = (router) => {
         description: 'How many elements to skip. Used for paging.',
         required: false,
         type: 'number'
-      } 
+      }
       #swagger.parameters['take'] = {
         in: 'query',
         description: 'How many elements to take. Used for paging.',
         required: false,
         type: 'number'
-      } 
+      }
       #swagger.parameters['sort'] = {
         in: 'query',
         description: 'Sort by field',
         required: false,
         type: 'string'
-      } 
+      }
       #swagger.parameters['order'] = {
         in: 'query',
         description: 'Sort order.',
         required: false,
         type: 'string'
-      } 
+      }
     */
     try {
-      console.log(query, topics, statuses, sort, order, skip, take)
-      const data = await searchQuizzes(query, topics, statuses, sort, order, skip, take);
+      let data;
+      if (ids && ids.length) {
+        data = await getQuizzesByIds(ids);
+      } else {
+        data = await searchQuizzes(
+          query,
+          topics,
+          statuses,
+          sort,
+          order,
+          skip,
+          take
+        );
+      }
       /*
         #swagger.responses[200] = {
           description: "Quizzes fetched successfully",
           schema: { $ref: "#/definitions/QuizSearchResult" }
-        } 
+        }
       */
       res.send(data);
     } catch (error) {
-      console.error(error)
+      console.error(error);
       res.status(500).send(error);
     }
   });
@@ -96,7 +115,7 @@ module.exports = (router) => {
         /*
           #swagger.responses[404] = {
             description: "Quiz not found",
-          } 
+          }
         */
         res.status(404).send({});
         return;
@@ -105,7 +124,7 @@ module.exports = (router) => {
         #swagger.responses[200] = {
           description: "Quiz fetched successfully",
           schema: { $ref: "#/definitions/QuizExtended" }
-        } 
+        }
       */
       res.send(quiz);
     } catch (error) {
@@ -139,7 +158,7 @@ module.exports = (router) => {
         #swagger.responses[200] = {
           description: "Quiz created successfully",
           schema: { $ref: "#/definitions/Quiz" }
-        } 
+        }
       */
       res.send(quiz);
     } catch (error) {
@@ -160,7 +179,7 @@ module.exports = (router) => {
       /*
         #swagger.responses[200] = {
           description: "Quiz deleted successfully",
-        } 
+        }
       */
       res.status(200).send({});
     } catch (error) {
@@ -194,7 +213,7 @@ module.exports = (router) => {
       /*
         #swagger.responses[200] = {
           description: "Quiz status updated successfully",
-        } 
+        }
       */
       res.status(200).send(updated);
     } catch (error) {
@@ -229,7 +248,7 @@ module.exports = (router) => {
         #swagger.responses[200] = {
           description: "Quiz status updated successfully",
           schema: { $ref: "#/definitions/Quiz" }
-        } 
+        }
       */
       res.status(200).send(updated);
     } catch (error) {

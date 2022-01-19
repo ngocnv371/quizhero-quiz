@@ -11,7 +11,9 @@ export const state = {
   items: [],
 }
 
-export const getters = {}
+export const getters = {
+  items: (state) => state.items,
+}
 
 export const mutations = {
   SET_SORT(state, sort) {
@@ -49,14 +51,24 @@ export const mutations = {
   },
 }
 
+function createParam(name, value) {
+  return value ? `&${name}=${value}` : ''
+}
+
 export const actions = {
   loadQuizzes(
     { commit },
     { skip, take, sort, order, query, topics, statuses }
   ) {
     const url =
-      `/quizzes?skip=${skip}&take=${take}&sort=${sort}&order=${order}` +
-      `&query=${query}&topics=${topics}&statuses=${statuses}`
+      `/quizzes?` +
+      createParam('skip', skip) +
+      createParam('take', take) +
+      createParam('sort', sort) +
+      createParam('order', order) +
+      createParam('query', query) +
+      createParam('topics', topics) +
+      createParam('statuses', statuses)
     return axios.get(url).then((response) => {
       const data = response.data
       commit('SET_SORT', data.sort)
@@ -68,6 +80,12 @@ export const actions = {
       commit('SET_TOTAL', data.total)
       commit('SET_ITEMS', data.items)
       return data
+    })
+  },
+  findQuizzesByIds(context, { ids }) {
+    const url = `/quizzes?` + createParam('ids', ids)
+    return axios.get(url).then((response) => {
+      return response.data
     })
   },
   createQuiz({ commit }, payload) {

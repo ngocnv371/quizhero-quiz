@@ -4,10 +4,11 @@ import { debounce } from 'lodash'
 import TopicPicker from './topic-picker.vue'
 import TopicLabel from './topic-label.vue'
 import StatusLabel from './status-label.vue'
+import QuizPicker from './quiz-picker.vue'
 
 export default {
   name: 'QuestionsTable',
-  components: { TopicPicker, TopicLabel, StatusLabel },
+  components: { TopicPicker, TopicLabel, StatusLabel, QuizPicker },
   data: () => ({
     dialog: false,
     dialogDelete: false,
@@ -96,7 +97,7 @@ export default {
         this.reload()
       },
     },
-    statuses: {
+    quizzes: {
       deep: true,
       handler() {
         this.reload()
@@ -231,9 +232,20 @@ export default {
           class="pl-2"
           style="width: 300px"
         />
+        <QuizPicker
+          v-model="quizzes"
+          multiple
+          class="pl-2"
+          style="width: 300px"
+        ></QuizPicker>
         <v-divider class="mx-4" inset vertical></v-divider>
         <v-spacer></v-spacer>
         <v-dialog v-model="dialog" max-width="500px" :persistent="loading">
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn color="primary" class="mb-2" v-bind="attrs" v-on="on">
+              New Item
+            </v-btn>
+          </template>
           <v-card>
             <v-card-title>
               <span class="text-h5">{{ formTitle }}</span>
@@ -242,6 +254,14 @@ export default {
             <v-card-text>
               <v-form v-model="validForm">
                 <v-container>
+                  <v-row>
+                    <v-col cols="12">
+                      <QuizPicker
+                        v-model="editedItem.quizId"
+                        label="Text"
+                      ></QuizPicker>
+                    </v-col>
+                  </v-row>
                   <v-row>
                     <v-col cols="12">
                       <v-text-field

@@ -49,14 +49,24 @@ export const mutations = {
   },
 }
 
+function createParam(name, value) {
+  return value ? `&${name}=${value}` : ''
+}
+
 export const actions = {
   loadQuestions(
     { commit },
-    { skip, take, sort, order, query, topics, statuses }
+    { skip, take, sort, order, query, topics, quizzes }
   ) {
     const url =
-      `/questions?skip=${skip}&take=${take}&sort=${sort}&order=${order}` +
-      `&query=${query}&topics=${topics}&statuses=${statuses}`
+      `/questions?` +
+      createParam('skip', skip) +
+      createParam('take', take) +
+      createParam('sort', sort) +
+      createParam('order', order) +
+      createParam('query', query) +
+      createParam('topics', topics) +
+      createParam('quizzes', quizzes)
     return axios.get(url).then((response) => {
       const data = response.data
       commit('SET_SORT', data.sort)

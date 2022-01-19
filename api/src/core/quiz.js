@@ -68,6 +68,17 @@ function toNumberArray(list) {
   return list.split(",").map(Number);
 }
 
+async function getQuizzesByIds(ids) {
+  const query = `SELECT * FROM quizzes WHERE id = ANY($1::int[])`;
+  const result = await db.query(query, [toNumberArray(ids)]);
+  return {
+    total: result.rowCount,
+    items: result.rows,
+    skip: 0,
+    take: result.rowCount,
+  };
+}
+
 async function searchQuizzes(
   search,
   topics,
@@ -133,4 +144,5 @@ module.exports = {
   getQuizById,
   updateQuizStatus,
   searchQuizzes,
+  getQuizzesByIds,
 };
