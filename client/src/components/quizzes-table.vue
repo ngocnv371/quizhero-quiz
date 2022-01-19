@@ -304,6 +304,11 @@ export default {
         </v-dialog>
       </v-toolbar>
     </template>
+    <template v-slot:item.name="{ item }">
+      <router-link :to="{ path: 'questions', query: { quizzes: item.id } }">
+        {{ item.name }}
+      </router-link>
+    </template>
     <template v-slot:item.topicId="{ item }">
       <TopicLabel :id="item.topicId" />
     </template>
