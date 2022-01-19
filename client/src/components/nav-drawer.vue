@@ -10,6 +10,10 @@ export default {
     onUpdate(value) {
       this.SET(value)
     },
+    logout() {
+      this.$auth.logout()
+      this.$router.push({ path: '/' })
+    },
   },
 }
 </script>
@@ -37,22 +41,14 @@ export default {
     <v-divider></v-divider>
     <v-list nav dense>
       <v-list-item-group active-class="deep-purple--text text--accent-4">
-        <v-list-item to="/my-questions">
+        <v-list-item to="/questions">
           <v-list-item-title>Questions</v-list-item-title>
-        </v-list-item>
-        <v-list-item to="/about">
-          <v-list-item-title>About</v-list-item-title>
         </v-list-item>
       </v-list-item-group>
     </v-list>
     <template v-slot:append>
       <div class="pa-2">
-        <v-btn block color="secondary" to="/profile">
-          Profile
-        </v-btn>
-      </div>
-      <div class="pa-2">
-        <v-btn block color="primary" to="/logout">
+        <v-btn block color="primary" @click="logout">
           Logout
         </v-btn>
       </div>

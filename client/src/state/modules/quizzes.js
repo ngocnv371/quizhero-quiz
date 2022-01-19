@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { getInstance } from '../../auth'
 
 export const state = {
   sort: 'name',
@@ -56,10 +57,12 @@ function createParam(name, value) {
 }
 
 export const actions = {
-  loadQuizzes(
+  async loadQuizzes(
     { commit },
     { skip, take, sort, order, query, topics, statuses }
   ) {
+    const token = await getInstance().getTokenSilently()
+    axios.defaults.headers.common.Authorization = `Bearer ${token}`
     const url =
       `/quizzes?` +
       createParam('skip', skip) +
