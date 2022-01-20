@@ -12,7 +12,7 @@ export default {
     ...mapGetters('topics', ['topics']),
     label() {
       const topic = this.topics.find((i) => i.id === this.id)
-      return topic.name
+      return topic ? topic.name : ''
     },
   },
 }
