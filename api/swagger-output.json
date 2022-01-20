@@ -18,6 +18,273 @@
   ],
   "securityDefinitions": {},
   "paths": {
+    "/statuses": {
+      "get": {
+        "tags": [
+          "Status"
+        ],
+        "description": "Get all valid statuses that can be used for quizzes",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Statuses fetched successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Status"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/Status"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/topics": {
+      "get": {
+        "tags": [
+          "Topic"
+        ],
+        "description": "Get all topics",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "skip",
+            "in": "query",
+            "description": "How many elements to skip. Used for paging.",
+            "required": false,
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "take",
+            "in": "query",
+            "description": "How many elements to take. Used for paging.",
+            "required": false,
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "description": "Sort by field",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "order",
+            "in": "query",
+            "description": "Sort order.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "query",
+            "in": "query",
+            "description": "Search by name.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "ids",
+            "in": "query",
+            "description": "Search by list of IDs. Example: 1,2,3",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Topics fetched successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TopicSearchResult"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/TopicSearchResult"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Topic"
+        ],
+        "description": "create a topic",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Topic created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Topic"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/Topic"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddTopic"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/topics/{topicId}": {
+      "get": {
+        "tags": [
+          "Topic"
+        ],
+        "description": "Get one topic",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "topicId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Topic fetched successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Topic"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/Topic"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Topic not found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Topic"
+        ],
+        "description": "Delete a topic",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "topicId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Topic deleted successfully"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Topic"
+        ],
+        "description": "Update a topic",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "topicId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Topic updated successfully"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateTopic"
+              }
+            }
+          }
+        }
+      }
+    },
     "/quizzes": {
       "get": {
         "tags": [
@@ -86,6 +353,15 @@
             "name": "topics",
             "in": "query",
             "description": "Search by list of topics. Example: 1,2,3",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "ids",
+            "in": "query",
+            "description": "Search by list of IDs. Example: 1,2,3",
             "required": false,
             "schema": {
               "type": "string"
@@ -1010,6 +1286,99 @@
         },
         "xml": {
           "name": "QuestionSearchResult"
+        }
+      },
+      "Topic": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number",
+            "example": 1
+          },
+          "name": {
+            "type": "string",
+            "example": "Topic"
+          }
+        },
+        "xml": {
+          "name": "Topic"
+        }
+      },
+      "AddTopic": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "topic"
+          }
+        },
+        "xml": {
+          "name": "AddTopic"
+        }
+      },
+      "UpdateTopic": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Updated topic"
+          }
+        },
+        "xml": {
+          "name": "UpdateTopic"
+        }
+      },
+      "TopicArray": {
+        "type": "array",
+        "items": {
+          "xml": {
+            "name": "topic"
+          },
+          "$ref": "#/components/schemas/Topic"
+        },
+        "xml": {
+          "name": "TopicArray"
+        }
+      },
+      "TopicSearchResult": {
+        "type": "object",
+        "properties": {
+          "search": {
+            "type": "string",
+            "example": "query string"
+          },
+          "sort": {
+            "type": "string",
+            "example": "name"
+          },
+          "order": {
+            "type": "string",
+            "example": "asc"
+          },
+          "skip": {
+            "type": "number",
+            "example": 0
+          },
+          "take": {
+            "type": "number",
+            "example": 10
+          },
+          "total": {
+            "type": "number",
+            "example": 100
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "xml": {
+                "name": "topicarray"
+              },
+              "$ref": "#/components/schemas/TopicArray"
+            }
+          }
+        },
+        "xml": {
+          "name": "TopicSearchResult"
         }
       }
     }

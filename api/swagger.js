@@ -112,6 +112,26 @@ const doc = {
       total: 100,
       items: [{ $ref: "#/definitions/QuestionArray" }],
     },
+    Topic: {
+      id: 1,
+      name: "Topic",
+    },
+    AddTopic: {
+      name: "topic",
+    },
+    UpdateTopic: {
+      name: "Updated topic",
+    },
+    TopicArray: [{ $ref: "#/definitions/Topic" }],
+    TopicSearchResult: {
+      search: "query string",
+      sort: "name",
+      order: "asc",
+      skip: 0,
+      take: 10,
+      total: 100,
+      items: [{ $ref: "#/definitions/TopicArray" }],
+    },
   },
   components: {
     securitySchemes: {

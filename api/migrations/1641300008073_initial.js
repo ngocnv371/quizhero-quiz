@@ -3,6 +3,11 @@
 exports.shorthands = undefined;
 
 exports.up = (pgm) => {
+  pgm.createTable("topics", {
+    id: "id",
+    name: { type: "character varying(50)", notNull: true },
+  });
+
   pgm.createTable("statuses", {
     id: "id",
     name: { type: "character varying(50)", notNull: true },
@@ -78,4 +83,5 @@ exports.down = (pgm) => {
   pgm.dropIndex("quizzes", "topicId");
   pgm.dropTable("quizzes");
   pgm.dropTable("statuses");
+  pgm.dropTable("topics");
 };
