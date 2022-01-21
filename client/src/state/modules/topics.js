@@ -1,17 +1,30 @@
-export const state = [
-  { id: 1, name: 'topic 1' },
-  { id: 2, name: 'topic 2' },
-  { id: 3, name: 'topic 3' },
-  { id: 4, name: 'topic 4' },
-  { id: 5, name: 'topic 5' },
-  { id: 6, name: 'topic 6' },
-  { id: 7, name: 'topic 7' },
-]
+import axios from 'axios'
 
-export const getters = {
-  topics: (state) => state,
+export const state = {
+  items: [],
 }
 
-export const mutations = {}
+export const getters = {
+  topics: (state) => state.items,
+}
 
-export const actions = {}
+export const mutations = {
+  SET_ITEMS(state, items) {
+    state.items = items
+  },
+}
+
+function createParam(name, value) {
+  return value ? `&${name}=${value}` : ''
+}
+
+export const actions = {
+  async loadTopics({ commit }) {
+    const url = `/topics?` + createParam('skip', 0) + createParam('take', 100)
+    return axios.get(url).then((response) => {
+      const data = response.data
+      commit('SET_ITEMS', data.items)
+      return data
+    })
+  },
+}

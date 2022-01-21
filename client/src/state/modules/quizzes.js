@@ -56,7 +56,7 @@ function createParam(name, value) {
 }
 
 export const actions = {
-  loadQuizzes(
+  async loadQuizzes(
     { commit },
     { skip, take, sort, order, query, topics, statuses }
   ) {
@@ -118,7 +118,7 @@ export const actions = {
     const { id } = payload
     return axios.delete(`/quizzes/${id}`).then((response) => {
       const data = response.data
-      commit('REMOVE_ITEM', data)
+      commit('UPDATE_ITEM', { ...payload, statusId: 5 })
       return data
     })
   },

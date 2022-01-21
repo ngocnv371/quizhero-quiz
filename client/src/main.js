@@ -2,7 +2,9 @@
 import '@components/_globals'
 
 import App from './app.vue'
+import { Auth0Plugin } from './auth'
 import Vue from 'vue'
+import axios from 'axios'
 import router from '@router'
 import store from '@state/store'
 import vuetify from './plugins/vuetify'
@@ -15,6 +17,23 @@ if (process.env.VUE_APP_TEST === 'e2e') {
   // Ensure tests fail when Vue emits an error.
   Vue.config.errorHandler = window.Cypress.cy.onUncaughtException
 }
+
+Vue.use(Auth0Plugin, {
+  domain: process.env.VUE_APP_AUTH0_DOMAIN,
+  clientId: process.env.VUE_APP_AUTH0_CLIENTID,
+  audience: process.env.VUE_APP_AUTH0_AUDIENCE,
+  onRedirectCallback: (appState) => {
+    router.push(
+      appState && appState.targetUrl
+        ? appState.targetUrl
+        : window.location.pathname
+    )
+  },
+  onAuthenticatedCallback(token) {
+    axios.defaults.headers.common.Authorization = `Bearer ${token}`
+    store.dispatch('topics/loadTopics')
+  },
+})
 
 const app = new Vue({
   vuetify,

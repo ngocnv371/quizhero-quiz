@@ -42,7 +42,7 @@ export const mutations = {
     state.items = state.items.map((i) => (i.id === item.id ? item : i))
   },
   ADD_ITEM(state, item) {
-    state.items.push(item)
+    state.items = [...state.items, item]
   },
   REMOVE_ITEM(state, item) {
     state.items = state.items.filter((i) => i.id !== item.id)
@@ -149,7 +149,7 @@ export const actions = {
       .delete(`/quizzes/${quizId}/questions/${id}`)
       .then((response) => {
         const data = response.data
-        commit('REMOVE_ITEM', data)
+        commit('REMOVE_ITEM', { id })
         return data
       })
   },
