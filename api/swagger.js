@@ -75,7 +75,7 @@ const doc = {
       statusId: 1,
       createdById: 1,
       createdAt: "2020-03-31T00:00:00.000Z",
-      questions: [{ $ref: "#/definitions/Question" }],
+      questions: { $ref: "#/definitions/QuestionArray" },
     },
     AddQuiz: {
       name: "Quiz",
@@ -89,6 +89,29 @@ const doc = {
       statusId: 1,
     },
     QuizArray: [{ $ref: "#/definitions/Quiz" }],
+    QuizSearchResult: {
+      search: "query string",
+      topics: "1,2,3",
+      statuses: "1,2,3",
+      sort: "name",
+      order: "asc",
+      skip: 0,
+      take: 10,
+      total: 100,
+      items: [{ $ref: "#/definitions/QuizArray" }],
+    },
+    QuestionArray: [{ $ref: "#/definitions/Question" }],
+    QuestionSearchResult: {
+      search: "query string",
+      topics: "1,2,3",
+      quizzes: "1,2,3",
+      sort: "name",
+      order: "asc",
+      skip: 0,
+      take: 10,
+      total: 100,
+      items: [{ $ref: "#/definitions/QuestionArray" }],
+    },
   },
   components: {
     securitySchemes: {

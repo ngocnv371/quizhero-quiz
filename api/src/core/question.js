@@ -2,17 +2,17 @@ const db = require("../db");
 
 async function createQuestion(q) {
   const query = `INSERT INTO questions(
-	  "text", "quizId", 
-	  "choice0", "choice1", "choice2", "choice3", 
-	  "correct0", "correct1", "correct2", "correct3", 
+	  "text", "quizId",
+	  "choice0", "choice1", "choice2", "choice3",
+	  "correct0", "correct1", "correct2", "correct3",
 	  "createdById"
-	  ) 
+	  )
 	  VALUES (
-		$1, $2, 
-		$3, $4, $5, $6, 
+		$1, $2,
+		$3, $4, $5, $6,
 		$7, $8, $9, $10,
 		$11
-	  ) 
+	  )
 	  RETURNING *`;
   const result = await db.query(query, [
     q.text,
@@ -38,7 +38,7 @@ async function createQuestion(q) {
 
 async function updateQuestion(id, data) {
   const result = await db.query(
-    `UPDATE questions 
+    `UPDATE questions
 		SET
 		  "text" = $1,
 		  "choice0" = $2,
@@ -92,9 +92,92 @@ async function getQuestionById(id) {
   };
 }
 
+function getSort(sort, order) {
+  const validSorts = ["text", "createdAt", "id"];
+  sort = validSorts.includes(sort) ? sort : validSorts[0];
+  const validOrders = ["asc", "desc"];
+  order = validOrders.includes(order) ? order : validOrders[0];
+  return `ORDER BY "${sort}" ${order}`;
+}
+
+function getPaging(skip, take) {
+  skip = skip >= 0 ? skip : 0;
+  take = take >= 0 && take <= 100 ? take : 10;
+  return `LIMIT ${take} OFFSET ${skip}`;
+}
+
+function toNumberArray(list) {
+  return list.split(",").map(Number);
+}
+
+async function searchQuestions(
+  search,
+  topics,
+  quizzes,
+  sort,
+  order,
+  skip,
+  take
+) {
+  const params = [];
+  const conditions = [];
+  let index = 1;
+  if (search) {
+    conditions.push(`AND "text" LIKE $${index++}`);
+    params.push(`%${search}%`);
+  }
+  if (topics && topics.length) {
+    conditions.push(`AND qz."topicId" = ANY($${index++}::int[])`);
+    params.push(toNumberArray(topics));
+  }
+  if (quizzes && quizzes.length) {
+    conditions.push(`AND q."quizId" = ANY($${index++}::int[])`);
+    params.push(toNumberArray(quizzes));
+  }
+  const countQuery = `SELECT COUNT(*) as total FROM questions q LEFT JOIN quizzes qz ON q."quizId" = qz."id" WHERE 1=1 ${conditions.join(
+    " "
+  )}`;
+  const countResult = await db.query(countQuery, params);
+  if (!countResult.rowCount) {
+    return {
+      total: 0,
+      items: [],
+      skip,
+      take,
+      sort,
+      order,
+      topics,
+      quizzes,
+      query: search,
+    };
+  }
+  const query = `SELECT q.* FROM questions q LEFT JOIN quizzes qz ON q."quizId" = qz."id" WHERE 1=1 ${conditions.join(
+    " "
+  )} ${getSort(sort, order)} ${getPaging(skip, take)}`;
+  const result = await db.query(query, params);
+  return {
+    total: Number(countResult.rows[0]["total"]),
+    items: result.rows.map((r) => ({
+      ...r,
+      correct0: Number(r.correct0),
+      correct1: Number(r.correct1),
+      correct2: Number(r.correct2),
+      correct3: Number(r.correct3),
+    })),
+    skip,
+    take,
+    sort,
+    order,
+    topics,
+    quizzes,
+    query: search,
+  };
+}
+
 module.exports = {
   createQuestion,
   updateQuestion,
   deleteQuestion,
   getQuestionById,
+  searchQuestions,
 };

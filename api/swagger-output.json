@@ -18,12 +18,12 @@
   ],
   "securityDefinitions": {},
   "paths": {
-    "/quizzes/pending": {
+    "/quizzes": {
       "get": {
         "tags": [
           "Quiz"
         ],
-        "description": "Get all pending quizzes",
+        "description": "Get all quizzes",
         "produces": [
           "application/json"
         ],
@@ -45,6 +45,51 @@
             "schema": {
               "type": "number"
             }
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "description": "Sort by field",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "order",
+            "in": "query",
+            "description": "Sort order.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "query",
+            "in": "query",
+            "description": "Search by name.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "statuses",
+            "in": "query",
+            "description": "Search by list of statuses. Example: 1,2,3",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "topics",
+            "in": "query",
+            "description": "Search by list of topics. Example: 1,2,3",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
@@ -53,12 +98,12 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/QuizArray"
+                  "$ref": "#/components/schemas/QuizSearchResult"
                 }
               },
               "application/xml": {
                 "schema": {
-                  "$ref": "#/components/schemas/QuizArray"
+                  "$ref": "#/components/schemas/QuizSearchResult"
                 }
               }
             }
@@ -67,55 +112,44 @@
             "description": "Internal Server Error"
           }
         }
-      }
-    },
-    "/quizzes/approved": {
-      "get": {
+      },
+      "post": {
         "tags": [
           "Quiz"
         ],
-        "description": "Get all approved quizzes",
+        "description": "create a quiz with questions",
         "produces": [
           "application/json"
         ],
-        "parameters": [
-          {
-            "name": "skip",
-            "in": "query",
-            "description": "How many elements to skip. Used for paging.",
-            "required": false,
-            "schema": {
-              "type": "number"
-            }
-          },
-          {
-            "name": "take",
-            "in": "query",
-            "description": "How many elements to take. Used for paging.",
-            "required": false,
-            "schema": {
-              "type": "number"
-            }
-          }
-        ],
+        "parameters": [],
         "responses": {
           "200": {
-            "description": "Quizzes fetched successfully",
+            "description": "Quiz created successfully",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/QuizArray"
+                  "$ref": "#/components/schemas/Quiz"
                 }
               },
               "application/xml": {
                 "schema": {
-                  "$ref": "#/components/schemas/QuizArray"
+                  "$ref": "#/components/schemas/Quiz"
                 }
               }
             }
           },
           "500": {
             "description": "Internal Server Error"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddQuiz"
+              }
+            }
           }
         }
       }
@@ -223,48 +257,6 @@
             "application/json": {
               "schema": {
                 "$ref": "#/components/schemas/UpdateQuiz"
-              }
-            }
-          }
-        }
-      }
-    },
-    "/quizzes": {
-      "post": {
-        "tags": [
-          "Quiz"
-        ],
-        "description": "create a quiz with questions",
-        "produces": [
-          "application/json"
-        ],
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "Quiz created successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Quiz"
-                }
-              },
-              "application/xml": {
-                "schema": {
-                  "$ref": "#/components/schemas/Quiz"
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
-        },
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/AddQuiz"
               }
             }
           }
@@ -517,6 +509,102 @@
           }
         }
       }
+    },
+    "/questions": {
+      "get": {
+        "tags": [
+          "Question"
+        ],
+        "description": "Get all questions",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "skip",
+            "in": "query",
+            "description": "How many elements to skip. Used for paging.",
+            "required": false,
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "take",
+            "in": "query",
+            "description": "How many elements to take. Used for paging.",
+            "required": false,
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "description": "Sort by field",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "order",
+            "in": "query",
+            "description": "Sort order.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "query",
+            "in": "query",
+            "description": "Search by name.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "quizzes",
+            "in": "query",
+            "description": "Search by list of quizzes. Example: 1,2,3",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "topics",
+            "in": "query",
+            "description": "Search by list of topics. Example: 1,2,3",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Questions fetched successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/QuestionSearchResult"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/QuestionSearchResult"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
     }
   },
   "components": {
@@ -748,13 +836,10 @@
             "example": "2020-03-31T00:00:00.000Z"
           },
           "questions": {
-            "type": "array",
-            "items": {
-              "xml": {
-                "name": "question"
-              },
-              "$ref": "#/components/schemas/Question"
-            }
+            "xml": {
+              "name": "questionarray"
+            },
+            "$ref": "#/components/schemas/QuestionArray"
           }
         },
         "xml": {
@@ -815,6 +900,116 @@
         },
         "xml": {
           "name": "QuizArray"
+        }
+      },
+      "QuizSearchResult": {
+        "type": "object",
+        "properties": {
+          "search": {
+            "type": "string",
+            "example": "query string"
+          },
+          "topics": {
+            "type": "string",
+            "example": "1,2,3"
+          },
+          "statuses": {
+            "type": "string",
+            "example": "1,2,3"
+          },
+          "sort": {
+            "type": "string",
+            "example": "name"
+          },
+          "order": {
+            "type": "string",
+            "example": "asc"
+          },
+          "skip": {
+            "type": "number",
+            "example": 0
+          },
+          "take": {
+            "type": "number",
+            "example": 10
+          },
+          "total": {
+            "type": "number",
+            "example": 100
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "xml": {
+                "name": "quizarray"
+              },
+              "$ref": "#/components/schemas/QuizArray"
+            }
+          }
+        },
+        "xml": {
+          "name": "QuizSearchResult"
+        }
+      },
+      "QuestionArray": {
+        "type": "array",
+        "items": {
+          "xml": {
+            "name": "question"
+          },
+          "$ref": "#/components/schemas/Question"
+        },
+        "xml": {
+          "name": "QuestionArray"
+        }
+      },
+      "QuestionSearchResult": {
+        "type": "object",
+        "properties": {
+          "search": {
+            "type": "string",
+            "example": "query string"
+          },
+          "topics": {
+            "type": "string",
+            "example": "1,2,3"
+          },
+          "quizzes": {
+            "type": "string",
+            "example": "1,2,3"
+          },
+          "sort": {
+            "type": "string",
+            "example": "name"
+          },
+          "order": {
+            "type": "string",
+            "example": "asc"
+          },
+          "skip": {
+            "type": "number",
+            "example": 0
+          },
+          "take": {
+            "type": "number",
+            "example": 10
+          },
+          "total": {
+            "type": "number",
+            "example": 100
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "xml": {
+                "name": "questionarray"
+              },
+              "$ref": "#/components/schemas/QuestionArray"
+            }
+          }
+        },
+        "xml": {
+          "name": "QuestionSearchResult"
         }
       }
     }

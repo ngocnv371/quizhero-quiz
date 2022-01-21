@@ -1,4 +1,4 @@
-const { VALID_STATUSES } = require('../config');
+const { VALID_STATUSES } = require("../config");
 
 const db = require("../db");
 
@@ -50,20 +50,91 @@ async function updateQuizStatus(quizId, status) {
   return result.rows[0];
 }
 
-async function getPendingQuizzes(skip, take) {
-  const result = await db.query(
-    'SELECT * FROM pending_quizzes ORDER BY "id" LIMIT $1 OFFSET $2',
-    [take, skip]
-  );
-  return result.rows;
+function getSort(sort, order) {
+  const validSorts = ["name", "statusId", "topicId", "createdAt", "id"];
+  sort = validSorts.includes(sort) ? sort : validSorts[0];
+  const validOrders = ["asc", "desc"];
+  order = validOrders.includes(order) ? order : validOrders[0];
+  return `ORDER BY "${sort}" ${order}`;
 }
 
-async function getApprovedQuizzes(skip, take) {
-  const result = await db.query(
-    'SELECT * FROM approved_quizzes ORDER BY "id" LIMIT $1 OFFSET $2',
-    [take, skip]
-  );
-  return result.rows;
+function getPaging(skip, take) {
+  skip = skip >= 0 ? skip : 0;
+  take = take >= 0 && take <= 100 ? take : 10;
+  return `LIMIT ${take} OFFSET ${skip}`;
+}
+
+function toNumberArray(list) {
+  return list.split(",").map(Number);
+}
+
+async function getQuizzesByIds(ids) {
+  const query = `SELECT * FROM quizzes WHERE id = ANY($1::int[])`;
+  const result = await db.query(query, [toNumberArray(ids)]);
+  return {
+    total: result.rowCount,
+    items: result.rows,
+    skip: 0,
+    take: result.rowCount,
+  };
+}
+
+async function searchQuizzes(
+  search,
+  topics,
+  statuses,
+  sort,
+  order,
+  skip,
+  take
+) {
+  const params = [];
+  const conditions = [];
+  let index = 1;
+  if (search) {
+    conditions.push(`AND "name" LIKE $${index++}`);
+    params.push(`%${search}%`);
+  }
+  if (topics && topics.length) {
+    conditions.push(`AND "topicId" = ANY($${index++}::int[])`);
+    params.push(toNumberArray(topics));
+  }
+  if (statuses && statuses.length) {
+    conditions.push(`AND "statusId" = ANY($${index++}::int[])`);
+    params.push(toNumberArray(statuses));
+  }
+  const countQuery = `SELECT COUNT(*) as total FROM quizzes WHERE 1=1 ${conditions.join(
+    " "
+  )}`;
+  const countResult = await db.query(countQuery, params);
+  if (!countResult.rowCount) {
+    return {
+      total: 0,
+      items: [],
+      skip,
+      take,
+      sort,
+      order,
+      statuses,
+      topics,
+      query: search,
+    };
+  }
+  const query = `SELECT * FROM quizzes WHERE 1=1 ${conditions.join(
+    " "
+  )} ${getSort(sort, order)} ${getPaging(skip, take)}`;
+  const result = await db.query(query, params);
+  return {
+    total: Number(countResult.rows[0]["total"]),
+    items: result.rows,
+    skip,
+    take,
+    sort,
+    order,
+    statuses,
+    topics,
+    query: search,
+  };
 }
 
 module.exports = {
@@ -72,6 +143,6 @@ module.exports = {
   updateQuiz,
   getQuizById,
   updateQuizStatus,
-  getPendingQuizzes,
-  getApprovedQuizzes,
+  searchQuizzes,
+  getQuizzesByIds,
 };
