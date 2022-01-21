@@ -4,6 +4,7 @@ import '@components/_globals'
 import App from './app.vue'
 import { Auth0Plugin } from './auth'
 import Vue from 'vue'
+import axios from 'axios'
 import router from '@router'
 import store from '@state/store'
 import vuetify from './plugins/vuetify'
@@ -27,6 +28,10 @@ Vue.use(Auth0Plugin, {
         ? appState.targetUrl
         : window.location.pathname
     )
+  },
+  onAuthenticatedCallback(token) {
+    axios.defaults.headers.common.Authorization = `Bearer ${token}`
+    store.dispatch('topics/loadTopics')
   },
 })
 

@@ -10,6 +10,7 @@ export const getInstance = () => instance
 
 export const useAuth0 = ({
   onRedirectCallback = DEFAULT_REDIRECT_CALLBACK,
+  onAuthenticatedCallback = (token) => {},
   redirectUri = window.location.origin,
   ...options
 }) => {
@@ -78,6 +79,9 @@ export const useAuth0 = ({
         } finally {
           this.loading = false
         }
+      },
+      handleAfterAuthenticated(token) {
+        onAuthenticatedCallback(token)
       },
       loginWithRedirect(o) {
         return this.auth0Client.loginWithRedirect(o)

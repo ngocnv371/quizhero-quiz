@@ -19,9 +19,6 @@ function createParam(name, value) {
 }
 
 export const actions = {
-  init({ dispatch }) {
-    dispatch('loadTopics')
-  },
   async loadTopics({ commit }) {
     const url = `/topics?` + createParam('skip', 0) + createParam('take', 100)
     return axios.get(url).then((response) => {
