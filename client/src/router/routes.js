@@ -3,9 +3,22 @@ import { authGuard } from '../auth'
 export default [
   {
     path: '/',
-    name: 'home',
+    redirect: '/topics',
+  },
+  {
+    path: '/topics',
+    name: 'topics',
     components: {
-      default: () => lazyLoadView(import('@views/home.vue')),
+      default: () => lazyLoadView(import('@views/topics.vue')),
+      navigation: () => lazyLoadView(import('@components/app-bar.vue')),
+    },
+    beforeEnter: authGuard,
+  },
+  {
+    path: '/quizzes',
+    name: 'quizzes',
+    components: {
+      default: () => lazyLoadView(import('@views/quizzes.vue')),
       navigation: () => lazyLoadView(import('@components/app-bar.vue')),
     },
     beforeEnter: authGuard,
