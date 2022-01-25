@@ -8,7 +8,7 @@ const doc = {
     description: "Manage Quizzes",
   },
   host: `localhost:${process.env.PORT}`,
-  basePath: "/",
+  basePath: "/api",
   schemes: ["http"],
   consumes: ["application/json"],
   produces: ["application/json"],
