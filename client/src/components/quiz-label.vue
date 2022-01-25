@@ -1,7 +1,7 @@
 <script>
 import { mapGetters } from 'vuex'
 export default {
-  name: 'TopicLabel',
+  name: 'QuizLabel',
   props: {
     id: {
       type: Number,
@@ -9,7 +9,7 @@ export default {
     },
   },
   computed: {
-    ...mapGetters('topics', ['items']),
+    ...mapGetters('quizzes', ['items']),
     label() {
       const topic = this.items.find((i) => i.id === this.id)
       return topic ? topic.name : ''

@@ -13,7 +13,7 @@ export default {
     },
   },
   computed: {
-    ...mapGetters('topics', ['topics']),
+    ...mapGetters('topics', ['items']),
   },
 }
 </script>
@@ -21,7 +21,7 @@ export default {
 <template>
   <v-autocomplete
     v-model="localValue"
-    :items="topics"
+    :items="items"
     :multiple="multiple"
     flat
     hide-no-data

@@ -3,7 +3,12 @@ import { authGuard } from '../auth'
 export default [
   {
     path: '/',
-    redirect: '/topics',
+    name: 'home',
+    components: {
+      default: () => lazyLoadView(import('@views/topics.vue')),
+      navigation: () => lazyLoadView(import('@components/app-bar.vue')),
+    },
+    beforeEnter: authGuard,
   },
   {
     path: '/topics',

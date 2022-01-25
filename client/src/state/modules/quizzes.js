@@ -61,7 +61,7 @@ export const actions = {
     { skip, take, sort, order, query, topics, statuses }
   ) {
     const url =
-      `/quizzes?` +
+      `/api/quizzes?` +
       createParam('skip', skip) +
       createParam('take', take) +
       createParam('sort', sort) +
@@ -83,7 +83,7 @@ export const actions = {
     })
   },
   findQuizzesByIds(context, { ids }) {
-    const url = `/quizzes?` + createParam('ids', ids)
+    const url = `/api/quizzes?` + createParam('ids', ids)
     return axios.get(url).then((response) => {
       return response.data
     })
@@ -91,7 +91,7 @@ export const actions = {
   createQuiz({ commit }, payload) {
     const { name, topicId } = payload
     return axios
-      .post(`/quizzes`, {
+      .post(`/api/quizzes`, {
         name,
         topicId,
       })
@@ -104,7 +104,7 @@ export const actions = {
   updateQuiz({ commit }, payload) {
     const { id, name, topicId } = payload
     return axios
-      .put(`/quizzes/${id}`, {
+      .put(`/api/quizzes/${id}`, {
         name,
         topicId,
       })
@@ -116,7 +116,7 @@ export const actions = {
   },
   deleteQuiz({ commit }, payload) {
     const { id } = payload
-    return axios.delete(`/quizzes/${id}`).then((response) => {
+    return axios.delete(`/api/quizzes/${id}`).then((response) => {
       const data = response.data
       commit('UPDATE_ITEM', { ...payload, statusId: 5 })
       return data

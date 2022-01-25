@@ -14,7 +14,7 @@ export default {
       if (!q) {
         return []
       }
-      return q.length ? q : [q]
+      return q.split(',').map((i) => Number(i))
     },
   },
 }

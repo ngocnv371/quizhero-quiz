@@ -31,7 +31,7 @@ Vue.use(Auth0Plugin, {
   },
   onAuthenticatedCallback(token) {
     axios.defaults.headers.common.Authorization = `Bearer ${token}`
-    store.dispatch('topics/loadTopics')
+    store.dispatch('topics/loadTopics', {})
   },
 })
 
