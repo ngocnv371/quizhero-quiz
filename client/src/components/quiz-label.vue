@@ -1,5 +1,5 @@
 <script>
-import { mapGetters } from 'vuex'
+import { mapActions } from 'vuex'
 export default {
   name: 'QuizLabel',
   props: {
@@ -8,12 +8,29 @@ export default {
       required: true,
     },
   },
+  data() {
+    return {
+      item: null,
+    }
+  },
   computed: {
-    ...mapGetters('quizzes', ['items']),
     label() {
-      const topic = this.items.find((i) => i.id === this.id)
-      return topic ? topic.name : ''
+      return this.item ? this.item.name : ''
     },
+  },
+  watch: {
+    id: {
+      immediate: true,
+      async handler() {
+        const data = await this.findQuizzesByIds({ ids: [this.id] })
+        this.item = data[0]
+      },
+    },
+  },
+  methods: {
+    ...mapActions('quizzes', {
+      findQuizzesByIds: 'findQuizzesByIds',
+    }),
   },
 }
 </script>

@@ -65,10 +65,10 @@ export default {
           this.items = data.items
         }
         if (this.pendingItems.length) {
-          const strandedData = await this.findQuizzesByIds({
+          const strandedItems = await this.findQuizzesByIds({
             ids: this.pendingItems,
           })
-          this.items = [...this.items, ...strandedData.items]
+          this.items = [...this.items, ...strandedItems]
         }
       } catch (error) {
         this.error = error

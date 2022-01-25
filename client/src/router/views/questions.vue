@@ -14,6 +14,9 @@ export default {
       if (!q) {
         return []
       }
+      if (typeof q === 'number') {
+        return [q]
+      }
       return q.split(',').map((i) => Number(i))
     },
   },

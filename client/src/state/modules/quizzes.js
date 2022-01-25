@@ -9,6 +9,7 @@ export const state = {
   topics: '',
   total: 0,
   items: [],
+  cache: [],
 }
 
 export const getters = {
@@ -49,6 +50,14 @@ export const mutations = {
   REMOVE_ITEM(state, item) {
     state.items = state.items.filter((i) => i.id !== item.id)
   },
+  UPDATE_CACHE(state, item) {
+    const index = state.cache.findIndex((c) => c.id === item.id)
+    if (index >= 0) {
+      state.cache[index] = item
+    } else {
+      state.cache = [...state.cache, item]
+    }
+  },
 }
 
 function createParam(name, value) {
@@ -57,7 +66,7 @@ function createParam(name, value) {
 
 export const actions = {
   async loadQuizzes(
-    { commit },
+    { commit, dispatch },
     { skip, take, sort, order, query, topics, statuses }
   ) {
     const url =
@@ -79,13 +88,26 @@ export const actions = {
       commit('SET_TOPICS', data.topics)
       commit('SET_TOTAL', data.total)
       commit('SET_ITEMS', data.items)
+      dispatch('cache', data)
       return data
     })
   },
+  cache({ commit }, { items }) {
+    items.forEach((item) => commit('UPDATE_CACHE', item))
+  },
   findQuizzesByIds(context, { ids }) {
-    const url = `/api/quizzes?` + createParam('ids', ids)
+    const cached = context.state.cache.filter((c) => ids.includes(c.id))
+    if (cached.length === ids.length) {
+      return Promise.resolve(cached)
+    }
+    const notCachedIds = ids.filter((id) => !cached.some((i) => i.id === id))
+    if (!notCachedIds.length) {
+      return Promise.resolve(cached)
+    }
+    const url = `/api/quizzes?` + createParam('ids', notCachedIds)
     return axios.get(url).then((response) => {
-      return response.data
+      context.dispatch('cache', response.data)
+      return response.data.items
     })
   },
   createQuiz({ commit }, payload) {
