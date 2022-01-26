@@ -8,6 +8,7 @@ export const state = {
   search: '',
   total: 0,
   items: [],
+  cache: [],
 }
 
 export const getters = {
@@ -45,21 +46,33 @@ export const mutations = {
   REMOVE_ITEM(state, item) {
     state.items = state.items.filter((i) => i.id !== item.id)
   },
+  UPDATE_CACHE(state, item) {
+    const index = state.cache.findIndex((c) => c.id === item.id)
+    if (index >= 0) {
+      state.cache[index] = item
+    } else {
+      state.cache = [...state.cache, item]
+    }
+  },
 }
 
 function createParam(name, value) {
-  return value ? `&${name}=${value}` : ''
+  return value ? `${name}=${value}` : ''
 }
 
 export const actions = {
   async loadTopics({ commit }, { skip, take, sort, order, query }) {
     const url =
       `/api/topics?` +
-      createParam('skip', skip) +
-      createParam('take', take) +
-      createParam('sort', sort) +
-      createParam('order', order) +
-      createParam('query', query)
+      [
+        createParam('skip', skip),
+        createParam('take', take),
+        createParam('sort', sort),
+        createParam('order', order),
+        createParam('query', query),
+      ]
+        .filter(Boolean)
+        .join('&')
     return axios.get(url).then((response) => {
       const data = response.data
       commit('SET_SORT', data.sort)
@@ -72,13 +85,25 @@ export const actions = {
       return data
     })
   },
-  findTopicsByIds(context, { ids }) {
-    const url = `/api/topics?` + createParam('ids', ids)
+  cache({ commit }, { items }) {
+    items.forEach((item) => commit('UPDATE_CACHE', item))
+  },
+  findQuizzesByIds(context, { ids }) {
+    const cached = context.state.cache.filter((c) => ids.includes(c.id))
+    if (cached.length === ids.length) {
+      return Promise.resolve(cached)
+    }
+    const notCachedIds = ids.filter((id) => !cached.some((i) => i.id === id))
+    if (!notCachedIds.length) {
+      return Promise.resolve(cached)
+    }
+    const url = `/api/topics?` + createParam('ids', notCachedIds)
     return axios.get(url).then((response) => {
-      return response.data
+      context.dispatch('cache', response.data)
+      return response.data.items
     })
   },
-  createTopic({ commit }, payload) {
+  createTopic({ commit, dispatch }, payload) {
     const { name, topicId } = payload
     return axios
       .post(`/api/topics`, {
@@ -88,10 +113,11 @@ export const actions = {
       .then((response) => {
         const data = response.data
         commit('ADD_ITEM', data)
+        dispatch('cache', { items: [data] })
         return data
       })
   },
-  updateTopic({ commit }, payload) {
+  updateTopic({ commit, dispatch }, payload) {
     const { id, name, topicId } = payload
     return axios
       .put(`/api/topics/${id}`, {
@@ -101,6 +127,7 @@ export const actions = {
       .then((response) => {
         const data = response.data
         commit('UPDATE_ITEM', data)
+        dispatch('cache', { items: [data] })
         return data
       })
   },

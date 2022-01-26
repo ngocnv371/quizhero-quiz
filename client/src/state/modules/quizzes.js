@@ -61,7 +61,7 @@ export const mutations = {
 }
 
 function createParam(name, value) {
-  return value ? `&${name}=${value}` : ''
+  return value ? `${name}=${value}` : ''
 }
 
 export const actions = {
@@ -71,13 +71,17 @@ export const actions = {
   ) {
     const url =
       `/api/quizzes?` +
-      createParam('skip', skip) +
-      createParam('take', take) +
-      createParam('sort', sort) +
-      createParam('order', order) +
-      createParam('query', query) +
-      createParam('topics', topics) +
-      createParam('statuses', statuses)
+      [
+        createParam('skip', skip),
+        createParam('take', take),
+        createParam('sort', sort),
+        createParam('order', order),
+        createParam('query', query),
+        createParam('topics', topics),
+        createParam('statuses', statuses),
+      ]
+        .filter(Boolean)
+        .join('&')
     return axios.get(url).then((response) => {
       const data = response.data
       commit('SET_SORT', data.sort)
@@ -110,7 +114,7 @@ export const actions = {
       return response.data.items
     })
   },
-  createQuiz({ commit }, payload) {
+  createQuiz({ commit, dispatch }, payload) {
     const { name, topicId } = payload
     return axios
       .post(`/api/quizzes`, {
@@ -120,10 +124,11 @@ export const actions = {
       .then((response) => {
         const data = response.data
         commit('ADD_ITEM', data)
+        dispatch('cache', { items: [data] })
         return data
       })
   },
-  updateQuiz({ commit }, payload) {
+  updateQuiz({ commit, dispatch }, payload) {
     const { id, name, topicId } = payload
     return axios
       .put(`/api/quizzes/${id}`, {
@@ -133,6 +138,7 @@ export const actions = {
       .then((response) => {
         const data = response.data
         commit('UPDATE_ITEM', data)
+        dispatch('cache', { items: [data] })
         return data
       })
   },
