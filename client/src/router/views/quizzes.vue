@@ -9,13 +9,25 @@ export default {
     meta: [{ name: 'description', content: appConfig.description }],
   },
   components: { Layout, QuizzesTable },
+  computed: {
+    initialTopics() {
+      const q = this.$route.query.topics
+      if (!q) {
+        return []
+      }
+      if (typeof q === 'number') {
+        return [q]
+      }
+      return q.split(',').map((i) => Number(i))
+    },
+  },
 }
 </script>
 
 <template>
   <Layout>
     <div style="min-height: 500px; align-self: start" class="mx-auto">
-      <QuizzesTable />
+      <QuizzesTable :initial-topics="initialTopics" />
     </div>
   </Layout>
 </template>

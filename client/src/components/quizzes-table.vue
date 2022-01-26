@@ -9,6 +9,13 @@ import StatusPicker from './status-picker.vue'
 export default {
   name: 'QuizzesTable',
   components: { TopicPicker, TopicLabel, StatusLabel, StatusPicker },
+  props: {
+    initialTopics: {
+      required: false,
+      type: Array,
+      default: () => [],
+    },
+  },
   data: () => ({
     dialog: false,
     dialogDelete: false,
@@ -92,6 +99,11 @@ export default {
   },
 
   async mounted() {
+    this.topics = this.initialTopics
+    if (this.initialTopics.length) {
+      this.defaultItem.topicId = this.initialTopics[0]
+      this.editedItem.topicId = this.initialTopics[0]
+    }
     await this.reload()
   },
 

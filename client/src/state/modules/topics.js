@@ -41,7 +41,7 @@ export const mutations = {
     state.items = state.items.map((i) => (i.id === item.id ? item : i))
   },
   ADD_ITEM(state, item) {
-    state.items.push(item)
+    state.items = [...state.items, item]
   },
   REMOVE_ITEM(state, item) {
     state.items = state.items.filter((i) => i.id !== item.id)
