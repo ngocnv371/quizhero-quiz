@@ -190,6 +190,9 @@ export default {
             </v-card-title>
 
             <v-card-text>
+              <v-alert v-if="error" dense outlined type="error">
+                <p v-text="error"></p>
+              </v-alert>
               <v-form v-model="validForm">
                 <v-container>
                   <v-row>

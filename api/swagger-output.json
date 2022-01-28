@@ -134,7 +134,14 @@
           "500": {
             "description": "Internal Server Error"
           }
-        }
+        },
+        "security": [
+          {
+            "bearerAuth": [
+              "read:topics"
+            ]
+          }
+        ]
       },
       "post": {
         "tags": [
@@ -165,6 +172,13 @@
             "description": "Internal Server Error"
           }
         },
+        "security": [
+          {
+            "bearerAuth": [
+              "create:topics"
+            ]
+          }
+        ],
         "requestBody": {
           "required": true,
           "content": {
@@ -218,7 +232,14 @@
           "500": {
             "description": "Internal Server Error"
           }
-        }
+        },
+        "security": [
+          {
+            "bearerAuth": [
+              "read:topics"
+            ]
+          }
+        ]
       },
       "delete": {
         "tags": [
@@ -245,7 +266,14 @@
           "500": {
             "description": "Internal Server Error"
           }
-        }
+        },
+        "security": [
+          {
+            "bearerAuth": [
+              "delete:topics"
+            ]
+          }
+        ]
       },
       "put": {
         "tags": [
@@ -273,6 +301,13 @@
             "description": "Internal Server Error"
           }
         },
+        "security": [
+          {
+            "bearerAuth": [
+              "update:topics"
+            ]
+          }
+        ],
         "requestBody": {
           "required": true,
           "content": {
@@ -387,7 +422,14 @@
           "500": {
             "description": "Internal Server Error"
           }
-        }
+        },
+        "security": [
+          {
+            "bearerAuth": [
+              "read:quizzes"
+            ]
+          }
+        ]
       },
       "post": {
         "tags": [
@@ -418,6 +460,13 @@
             "description": "Internal Server Error"
           }
         },
+        "security": [
+          {
+            "bearerAuth": [
+              "create:quizzes"
+            ]
+          }
+        ],
         "requestBody": {
           "required": true,
           "content": {
@@ -471,7 +520,14 @@
           "500": {
             "description": "Internal Server Error"
           }
-        }
+        },
+        "security": [
+          {
+            "bearerAuth": [
+              "read:quizzes"
+            ]
+          }
+        ]
       },
       "delete": {
         "tags": [
@@ -499,7 +555,14 @@
           "500": {
             "description": "Internal Server Error"
           }
-        }
+        },
+        "security": [
+          {
+            "bearerAuth": [
+              "delete:quizzes"
+            ]
+          }
+        ]
       },
       "put": {
         "tags": [
@@ -527,6 +590,13 @@
             "description": "Internal Server Error"
           }
         },
+        "security": [
+          {
+            "bearerAuth": [
+              "update:quizzes"
+            ]
+          }
+        ],
         "requestBody": {
           "required": true,
           "content": {
@@ -579,6 +649,13 @@
             "description": "Internal Server Error"
           }
         },
+        "security": [
+          {
+            "bearerAuth": [
+              "update:quizzes"
+            ]
+          }
+        ],
         "requestBody": {
           "required": true,
           "content": {
@@ -640,7 +717,14 @@
           "500": {
             "description": "Internal Server Error"
           }
-        }
+        },
+        "security": [
+          {
+            "bearerAuth": [
+              "read:questions"
+            ]
+          }
+        ]
       },
       "delete": {
         "tags": [
@@ -675,7 +759,14 @@
           "500": {
             "description": "Internal Server Error"
           }
-        }
+        },
+        "security": [
+          {
+            "bearerAuth": [
+              "delete:questions"
+            ]
+          }
+        ]
       },
       "put": {
         "tags": [
@@ -723,6 +814,13 @@
             "description": "Internal Server Error"
           }
         },
+        "security": [
+          {
+            "bearerAuth": [
+              "update:questions"
+            ]
+          }
+        ],
         "requestBody": {
           "required": true,
           "content": {
@@ -774,6 +872,13 @@
             "description": "Internal Server Error"
           }
         },
+        "security": [
+          {
+            "bearerAuth": [
+              "create:questions"
+            ]
+          }
+        ],
         "requestBody": {
           "required": true,
           "content": {
@@ -879,7 +984,14 @@
           "500": {
             "description": "Internal Server Error"
           }
-        }
+        },
+        "security": [
+          {
+            "bearerAuth": [
+              "read:questions"
+            ]
+          }
+        ]
       }
     }
   },
@@ -889,6 +1001,18 @@
         "type": "http",
         "scheme": "bearer",
         "bearerFormat": "JWT"
+      },
+      "auth0": {
+        "type": "oauth2",
+        "flows": {
+          "implicit": {
+            "authorizationUrl": "https://dev-ki47hyci.us.auth0.com/authorize",
+            "scopes": [
+              "read:quizzes",
+              "create:quizzes"
+            ]
+          }
+        }
       }
     },
     "schemas": {
@@ -1385,7 +1509,8 @@
   },
   "security": [
     {
-      "bearerAuth": []
+      "bearerAuth": [],
+      "auth0": []
     }
   ]
 }
