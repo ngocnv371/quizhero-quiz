@@ -9,9 +9,9 @@ export default {
     },
   },
   computed: {
-    ...mapGetters('topics', ['topics']),
+    ...mapGetters('topics', ['items']),
     label() {
-      const topic = this.topics.find((i) => i.id === this.id)
+      const topic = this.items.find((i) => i.id === this.id)
       return topic ? topic.name : ''
     },
   },

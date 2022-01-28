@@ -7,5 +7,5 @@ require("./quizzes")(router);
 require("./questions")(router);
 
 module.exports = (app) => {
-  app.use("/", router);
+  app.use("/api", router);
 };

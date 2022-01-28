@@ -1,21 +1,9 @@
 <script>
 import { mapActions, mapState } from 'vuex'
 import { debounce } from 'lodash'
-import TopicPicker from './topic-picker.vue'
-import TopicLabel from './topic-label.vue'
-import StatusLabel from './status-label.vue'
-import StatusPicker from './status-picker.vue'
 
 export default {
-  name: 'QuizzesTable',
-  components: { TopicPicker, TopicLabel, StatusLabel, StatusPicker },
-  props: {
-    initialTopics: {
-      required: false,
-      type: Array,
-      default: () => [],
-    },
-  },
+  name: 'TopicsTable',
   data: () => ({
     dialog: false,
     dialogDelete: false,
@@ -27,16 +15,11 @@ export default {
         value: 'id',
       },
       { text: 'Name', value: 'name' },
-      { text: 'Topic', value: 'topicId' },
-      { text: 'Status', value: 'statusId' },
-      { text: 'Created By', value: 'createdById', sortable: false },
       { text: 'Actions', value: 'actions', sortable: false },
     ],
     validForm: false,
     localSearch: '',
     loading: false,
-    topics: [],
-    statuses: [],
     error: '',
     options: {
       itemsPerPage: 20,
@@ -48,21 +31,15 @@ export default {
     editedItem: {
       id: 0,
       name: '',
-      topicId: 0,
-      createdById: 0,
-      createdAt: 0,
     },
     defaultItem: {
       id: 0,
       name: '',
-      topicId: 0,
-      createdById: 0,
-      createdAt: 0,
     },
   }),
 
   computed: {
-    ...mapState('quizzes', ['items', 'search', 'take', 'total']),
+    ...mapState('topics', ['items', 'search', 'take', 'total']),
     formTitle() {
       return this.editedIndex === -1 ? 'New Item' : 'Edit Item'
     },
@@ -84,35 +61,14 @@ export default {
     localSearch: debounce(function() {
       this.reload()
     }, 1000),
-    topics: {
-      deep: true,
-      handler() {
-        this.reload()
-      },
-    },
-    statuses: {
-      deep: true,
-      handler() {
-        this.reload()
-      },
-    },
-  },
-
-  async mounted() {
-    this.topics = this.initialTopics
-    if (this.initialTopics.length) {
-      this.defaultItem.topicId = this.initialTopics[0]
-      this.editedItem.topicId = this.initialTopics[0]
-    }
-    await this.reload()
   },
 
   methods: {
-    ...mapActions('quizzes', [
-      'loadQuizzes',
-      'updateQuiz',
-      'createQuiz',
-      'deleteQuiz',
+    ...mapActions('topics', [
+      'loadTopics',
+      'updateTopic',
+      'createTopic',
+      'deleteTopic',
     ]),
     async reload() {
       const skip = (this.options.page - 1) * this.options.itemsPerPage
@@ -123,18 +79,14 @@ export default {
           ? 'desc'
           : 'asc'
       const query = this.localSearch
-      const topicsList = this.topics.join(',')
-      const statusesList = this.statuses.join(',')
       this.loading = true
       try {
-        await this.loadQuizzes({
+        await this.loadTopics({
           skip,
           take,
           query,
           sort,
           order,
-          topics: topicsList,
-          statuses: statusesList,
         })
       } catch (error) {
         this.error = error
@@ -158,7 +110,7 @@ export default {
     async deleteItemConfirm() {
       try {
         this.loading = true
-        await this.deleteQuiz(this.editedItem)
+        await this.deleteTopic(this.editedItem)
         this.closeDelete()
       } catch (error) {
         this.error = error
@@ -187,9 +139,9 @@ export default {
       this.loading = true
       try {
         if (this.editedItem.id) {
-          await this.updateQuiz(this.editedItem)
+          await this.updateTopic(this.editedItem)
         } else {
-          await this.createQuiz(this.editedItem)
+          await this.createTopic(this.editedItem)
         }
         this.close()
       } catch (error) {
@@ -213,7 +165,7 @@ export default {
   >
     <template v-slot:top>
       <v-toolbar flat>
-        <v-toolbar-title>Quizzes</v-toolbar-title>
+        <v-toolbar-title>Topics</v-toolbar-title>
         <v-divider class="mx-4" inset vertical></v-divider>
         <v-spacer></v-spacer>
         <v-text-field
@@ -224,18 +176,6 @@ export default {
           hide-details
           style="width: 300px"
         ></v-text-field>
-        <TopicPicker
-          v-model="topics"
-          multiple
-          class="pl-2"
-          style="width: 300px"
-        />
-        <StatusPicker
-          v-model="statuses"
-          multiple
-          class="pl-2"
-          style="width: 300px"
-        />
         <v-divider class="mx-4" inset vertical></v-divider>
         <v-spacer></v-spacer>
         <v-dialog v-model="dialog" max-width="500px" :persistent="loading">
@@ -248,6 +188,7 @@ export default {
             <v-card-title>
               <span class="text-h5">{{ formTitle }}</span>
             </v-card-title>
+
             <v-card-text>
               <v-alert v-if="error" dense outlined type="error">
                 <p v-text="error"></p>
@@ -258,11 +199,8 @@ export default {
                     <v-col cols="12" sm="6" md="8">
                       <v-text-field
                         v-model="editedItem.name"
-                        label="Quiz name"
+                        label="Topic name"
                       ></v-text-field>
-                    </v-col>
-                    <v-col cols="12" sm="6" md="4">
-                      <TopicPicker v-model="editedItem.topicId" />
                     </v-col>
                   </v-row>
                 </v-container>
@@ -319,12 +257,9 @@ export default {
       </v-toolbar>
     </template>
     <template v-slot:item.name="{ item }">
-      <router-link :to="{ path: 'questions', query: { quizzes: item.id } }">
+      <router-link :to="{ path: 'quizzes', query: { topics: item.id } }">
         {{ item.name }}
       </router-link>
-    </template>
-    <template v-slot:item.topicId="{ item }">
-      <TopicLabel :id="item.topicId" />
     </template>
     <template v-slot:item.statusId="{ item }">
       <StatusLabel :id="item.statusId" />

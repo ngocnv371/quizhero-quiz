@@ -44,6 +44,12 @@ export default {
         <v-list-item to="/">
           <v-list-item-title>Home</v-list-item-title>
         </v-list-item>
+        <v-list-item to="/topics">
+          <v-list-item-title>Topics</v-list-item-title>
+        </v-list-item>
+        <v-list-item to="/quizzes">
+          <v-list-item-title>Quizzes</v-list-item-title>
+        </v-list-item>
         <v-list-item to="/questions">
           <v-list-item-title>Questions</v-list-item-title>
         </v-list-item>

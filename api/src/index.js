@@ -26,7 +26,15 @@ app.use(cors());
 // adding morgan to log HTTP requests
 app.use(morgan("combined"));
 
-app.use("/swagger", swaggerUi.serve, swaggerUi.setup(swaggerFile));
+app.use(
+  "/swagger",
+  swaggerUi.serve,
+  swaggerUi.setup(swaggerFile, {
+    swaggerOptions: {
+      oauth2RedirectUrl: process.env.ROOT + "/swagger/oauth2-redirect.html",
+    },
+  })
+);
 
 if (process.env.NODE_ENV !== "test") {
   var jwtCheck = jwt({
@@ -55,7 +63,6 @@ app.use(function (err, req, res, next) {
 mountRoutes(app);
 
 // starting the server
-const port = process.env.PORT || 3000;
-app.listen(port, () => {
-  console.log(`listening on http://localhost:${port}/`);
+app.listen(process.env.PORT, () => {
+  console.log(`listening on ${process.env.ROOT}`);
 });

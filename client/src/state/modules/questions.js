@@ -59,7 +59,7 @@ export const actions = {
     { skip, take, sort, order, query, topics, quizzes }
   ) {
     const url =
-      `/questions?` +
+      `/api/questions?` +
       createParam('skip', skip) +
       createParam('take', take) +
       createParam('sort', sort) +
@@ -94,7 +94,7 @@ export const actions = {
       correct3,
     } = payload
     return axios
-      .post(`/quizzes/${quizId}/questions`, {
+      .post(`/api/quizzes/${quizId}/questions`, {
         text,
         choice0,
         choice1,
@@ -126,7 +126,7 @@ export const actions = {
       correct3,
     } = payload
     return axios
-      .put(`/quizzes/${quizId}/questions/${id}`, {
+      .put(`/api/quizzes/${quizId}/questions/${id}`, {
         text,
         choice0,
         choice1,
@@ -146,7 +146,7 @@ export const actions = {
   deleteQuestion({ commit }, payload) {
     const { quizId, id } = payload
     return axios
-      .delete(`/quizzes/${quizId}/questions/${id}`)
+      .delete(`/api/quizzes/${quizId}/questions/${id}`)
       .then((response) => {
         const data = response.data
         commit('REMOVE_ITEM', { id })

@@ -8,7 +8,7 @@ const doc = {
     description: "Manage Quizzes",
   },
   host: `localhost:${process.env.PORT}`,
-  basePath: "/",
+  basePath: "/api",
   schemes: ["http"],
   consumes: ["application/json"],
   produces: ["application/json"],
@@ -140,9 +140,18 @@ const doc = {
         scheme: "bearer",
         bearerFormat: "JWT",
       },
+      auth0: {
+        type: "oauth2",
+        flows: {
+          implicit: {
+            authorizationUrl: process.env.OAUTH_AUTHORIZE,
+            scopes: ["read:quizzes", "create:quizzes"]
+          }
+        }
+      }
     },
   },
-  security: [{ bearerAuth: [] }],
+  security: [{ bearerAuth: [], auth0: [] }],
 };
 
 const outputFile = "./swagger-output.json";

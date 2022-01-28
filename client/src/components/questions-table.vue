@@ -2,13 +2,12 @@
 import { mapActions, mapState } from 'vuex'
 import { debounce } from 'lodash'
 import TopicPicker from './topic-picker.vue'
-import TopicLabel from './topic-label.vue'
-import StatusLabel from './status-label.vue'
+import QuizLabel from './quiz-label.vue'
 import QuizPicker from './quiz-picker.vue'
 
 export default {
   name: 'QuestionsTable',
-  components: { TopicPicker, TopicLabel, StatusLabel, QuizPicker },
+  components: { TopicPicker, QuizLabel, QuizPicker },
   props: {
     initialQuizzes: {
       required: false,
@@ -114,6 +113,10 @@ export default {
 
   async mounted() {
     this.quizzes = this.initialQuizzes
+    if (this.initialQuizzes.length) {
+      this.defaultItem.quizId = this.initialQuizzes[0]
+      this.editedItem.quizId = this.initialQuizzes[0]
+    }
     await this.reload()
   },
 
@@ -260,6 +263,9 @@ export default {
             </v-card-title>
 
             <v-card-text>
+              <v-alert v-if="error" dense outlined type="error">
+                <p v-text="error"></p>
+              </v-alert>
               <v-form v-model="validForm">
                 <v-container>
                   <v-row>
@@ -391,11 +397,8 @@ export default {
         </v-dialog>
       </v-toolbar>
     </template>
-    <template v-slot:item.topicId="{ item }">
-      <TopicLabel :id="item.topicId" />
-    </template>
-    <template v-slot:item.statusId="{ item }">
-      <StatusLabel :id="item.statusId" />
+    <template v-slot:item.quizId="{ item }">
+      <QuizLabel :id="item.quizId" />
     </template>
     <template v-slot:item.createdById="{ item }">
       <v-avatar size="36">
