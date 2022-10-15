@@ -12,13 +12,20 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "bluebird": "^3.7.2",
+    "cross-env": "^7.0.3",
     "nodemon": "^2.0.20",
     "sequelize-cli": "^6.5.1"
   },
   "dependencies": {
+    "chai": "^4.3.6",
+    "chai-http": "^4.3.0",
     "cookie-parser": "^1.4.6",
     "express": "^4.18.2",
     "jade": "^1.11.0",
+    "mocha": "^10.0.0",
+    "mocha-junit-reporter": "^2.1.0",
+    "mocha-multi-reporters": "^1.5.1",
     "sequelize": "^6.25.1",
     "sqlite3": "^5.1.2"
   }
