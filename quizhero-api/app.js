@@ -1,14 +1,14 @@
 var express = require("express");
 var path = require("path");
 var cookieParser = require("cookie-parser");
-var winston = require("winston"),
-  expressWinston = require("express-winston");
+var expressWinston = require("express-winston");
 require("./connection");
 
 var app = express();
 
 var indexRouter = require("./routes/index");
 var topicsRouter = require("./routes/topics");
+var logsRouter = require("./routes/logs");
 const logger = require("./logger");
 
 // view engine setup
@@ -34,5 +34,6 @@ app.use(
 
 app.use("/", indexRouter);
 app.use("/topics", topicsRouter);
+app.use("/logs", logsRouter)
 
 module.exports = app;
