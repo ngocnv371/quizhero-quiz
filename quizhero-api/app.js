@@ -1,4 +1,8 @@
 var express = require("express");
+require("dotenv").config();
+const cors = require("cors");
+var jwt = require("express-jwt");
+var jwks = require("jwks-rsa");
 var path = require("path");
 var cookieParser = require("cookie-parser");
 var expressWinston = require("express-winston");
@@ -12,6 +16,9 @@ var quizzesRouter = require("./routes/quizzes");
 var logsRouter = require("./routes/logs");
 const logger = require("./logger");
 
+// enabling CORS for all requests
+app.use(cors());
+
 // view engine setup
 app.set("view engine", "jade");
 
@@ -19,6 +26,22 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
+
+if (process.env.NODE_ENV !== "test") {
+  var jwtCheck = jwt({
+    secret: jwks.expressJwtSecret({
+      cache: true,
+      rateLimit: true,
+      jwksRequestsPerMinute: 5,
+      jwksUri: process.env.JWT_URI,
+    }),
+    audience: process.env.JWT_AUDIENCE,
+    issuer: process.env.JWT_ISSUER,
+    algorithms: ["RS256"],
+  });
+
+  app.use(jwtCheck);
+}
 
 app.use(
   expressWinston.logger({
@@ -36,6 +59,6 @@ app.use(
 app.use("/", indexRouter);
 app.use("/topics", topicsRouter);
 app.use("/quizzes", quizzesRouter);
-app.use("/logs", logsRouter)
+app.use("/logs", logsRouter);
 
 module.exports = app;
