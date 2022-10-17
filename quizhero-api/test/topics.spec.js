@@ -51,6 +51,7 @@ describe('topics_api', () => {
 
     afterEach(async () => {
         await Topics.drop();
+        await Topics.sync();
     })
 
     it('should create a new topic', async () => {

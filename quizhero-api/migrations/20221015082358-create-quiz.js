@@ -30,7 +30,7 @@ module.exports = {
       {
         type: Sequelize.INTEGER,
         references: {
-          model: 'Status',
+          model: 'Statuses',
           key: 'id'
         },
         onUpdate: 'CASCADE',
@@ -43,7 +43,7 @@ module.exports = {
       {
         type: Sequelize.INTEGER,
         references: {
-          model: 'Topic',
+          model: 'Topics',
           key: 'id'
         },
         onUpdate: 'CASCADE',
@@ -52,8 +52,6 @@ module.exports = {
     )
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.removeColumn('Quizzes', 'statusId');
-    await queryInterface.removeColumn('Quizzes', 'topicId');
     await queryInterface.dropTable('Quizzes');
   }
 };

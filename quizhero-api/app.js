@@ -8,6 +8,7 @@ var app = express();
 
 var indexRouter = require("./routes/index");
 var topicsRouter = require("./routes/topics");
+var quizzesRouter = require("./routes/quizzes");
 var logsRouter = require("./routes/logs");
 const logger = require("./logger");
 
@@ -34,6 +35,7 @@ app.use(
 
 app.use("/", indexRouter);
 app.use("/topics", topicsRouter);
+app.use("/quizzes", quizzesRouter);
 app.use("/logs", logsRouter)
 
 module.exports = app;

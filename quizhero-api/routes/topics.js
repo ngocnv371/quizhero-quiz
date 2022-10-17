@@ -6,8 +6,7 @@ router.post('/', async (req, res) => {
   res.status(201).send(created)
 })
 router.get('/', async (req, res) => {
-  const { topicId } = req.query;
-  const list = await controller.getAll(topicId)
+  const list = await controller.getAll()
   res.status(200).send(list)
 })
 router.get('/:id', async (req, res) => {

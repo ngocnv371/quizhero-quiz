@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites name="Mocha Tests" time="0.156" tests="12" failures="1">
+  <testsuite name="Root Suite" timestamp="2022-10-17T08:23:07" tests="0" time="0.000" failures="0">
+  </testsuite>
+  <testsuite name="quizzes_api" timestamp="2022-10-17T08:23:07" tests="12" file="F:\dev\quizhero-quiz\quizhero-api\test\quizzes.spec.js" time="0.151" failures="1">
+    <testcase name="quizzes_api should create a new quiz" time="0.018" classname="should create a new quiz">
+    </testcase>
+    <testcase name="quizzes_api should fetch all the quizzes" time="0.054" classname="should fetch all the quizzes">
+      <failure message="expected [ { id: 1, …(6) }, …(3) ] to deeply equal [ …(4) ]" type="AssertionError"><![CDATA[AssertionError: expected [ { id: 1, …(6) }, …(3) ] to deeply equal [ …(4) ]
+    at Context.<anonymous> (test\quizzes.spec.js:102:26)
+    at processTicksAndRejections (node:internal/process/task_queues:96:5)
+
+      + expected - actual
+
+       [
+         {
+      -    "StatusId": 2
+      -    "TopicId": 1
+           "createdAt": "2022-10-17T08:23:07.343Z"
+      -    "createdById": [null]
+           "id": 1
+           "name": "Drink Coffee"
+      +    "statusId": 2
+      +    "topicId": 1
+           "updatedAt": "2022-10-17T08:23:07.346Z"
+         }
+         {
+      -    "StatusId": 1
+      -    "TopicId": 1
+           "createdAt": "2022-10-17T08:23:07.355Z"
+      -    "createdById": [null]
+           "id": 2
+           "name": "Eat Lunch"
+      +    "statusId": 1
+      +    "topicId": 1
+           "updatedAt": "2022-10-17T08:23:07.358Z"
+         }
+         {
+      -    "StatusId": 3
+      -    "TopicId": 2
+           "createdAt": "2022-10-17T08:23:07.367Z"
+      -    "createdById": [null]
+           "id": 3
+           "name": "Workout"
+      +    "statusId": 3
+      +    "topicId": 2
+           "updatedAt": "2022-10-17T08:23:07.369Z"
+         }
+         {
+      -    "StatusId": 4
+      -    "TopicId": 2
+           "createdAt": "2022-10-17T08:23:07.377Z"
+      -    "createdById": [null]
+           "id": 4
+           "name": "Eat Breakfast"
+      +    "statusId": 4
+      +    "topicId": 2
+           "updatedAt": "2022-10-17T08:23:07.379Z"
+         }
+       ]
+      ]]></failure>
+    </testcase>
+  </testsuite>
+</testsuites>
