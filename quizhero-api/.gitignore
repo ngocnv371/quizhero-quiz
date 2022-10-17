@@ -2,6 +2,7 @@
 artifacts
 logs
 *.log
+unit.xml
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
